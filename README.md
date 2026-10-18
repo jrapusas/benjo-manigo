@@ -280,7 +280,7 @@ The site uses **static prerendering** for public pages and **on-demand routes** 
 | Build output directory | `dist/client` (from `wrangler.jsonc` `pages_build_output_dir`; dashboard field can stay empty) |
 | Node version | `22` (`.nvmrc` / `NODE_VERSION` env) |
 
-In **Workers & Pages → your project → Settings → Builds**, set **Build command** to `npm run build`. With `wrangler.jsonc` present, Cloudflare reads the output directory from the file but **never** runs a build unless the dashboard command is set. A log line `No build command specified. Skipping build step.` means that field is empty. `The name 'ASSETS' is reserved in Pages projects` means the generated `dist/server/wrangler.json` still has `pages_build_output_dir`. `npm run build` strips that field from generated copies so Pages can read the worker config.
+In **Workers & Pages → your project → Settings → Builds**, set **Build command** to `npm run build`. With `wrangler.jsonc` present, Cloudflare reads the output directory from the file but **never** runs a build unless the dashboard command is set. A log line `No build command specified. Skipping build step.` means that field is empty. `npm run build` deletes `.wrangler/deploy/config.json` so Pages keeps uploading `dist/client`. Leaving that redirect in place publishes the worker bundle and every URL 404s. `/keystatic` needs a Workers deploy (`npx wrangler deploy`), which this Pages project does not run.
 
 Do **not** set the output directory to the repo root (`.`). A broken `.context/project` symlink used to live in git and triggers: *build output directory contains links to files that can't be accessed*.
 
