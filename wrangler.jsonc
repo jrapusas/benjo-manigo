@@ -2,7 +2,8 @@
   // Cloudflare Pages (Git): output dir + runtime flags only.
   // Dashboard MUST set Build command to `npm run build` — Pages ignores `build` here.
   // Do not set `assets.binding` here — Pages reserves "ASSETS".
-  // Worker + assets config is emitted to dist/server/wrangler.json after build.
+  // Adapter copies this file to dist/server/wrangler.json and adds that binding.
+  // The build then strips pages_build_output_dir from generated copies only.
   "name": "benjo-manigo",
   "compatibility_date": "2026-02-21",
   "compatibility_flags": ["nodejs_compat"],

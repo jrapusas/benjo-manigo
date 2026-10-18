@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "npm run generate:colors && node scripts/stop-astro-dev.mjs && node scripts/clear-vite-cache.mjs && astro dev",
     "dev:fresh": "node scripts/stop-astro-dev.mjs && node scripts/clear-vite-cache.mjs && astro dev --background --host",
-    "build": "vite-node scripts/generate-color-themes.mjs && astro build",
+    "build": "vite-node scripts/generate-color-themes.mjs && astro build && node scripts/strip-pages-output-dir.mjs",
     "preview": "astro preview",
     "deploy": "npm run build && wrangler deploy --config dist/server/wrangler.json",
     "astro": "astro",
