@@ -1,14 +1,9 @@
 {
-  // Cloudflare Pages (Git) reads this for build output + runtime flags.
-  // Dashboard still needs Build command: npm run build (Node 22).
+  // Cloudflare Pages (Git): output dir + runtime flags only.
+  // Do not set `assets.binding` here — Pages reserves "ASSETS".
+  // Worker + assets config is emitted to dist/server/wrangler.json after build.
   "name": "benjo-manigo",
   "compatibility_date": "2026-02-21",
   "compatibility_flags": ["nodejs_compat"],
   "pages_build_output_dir": "./dist/client",
-  // Used by `npm run deploy` / Workers after `astro build`:
-  "main": "./dist/server/entry.mjs",
-  "assets": {
-    "directory": "./dist/client",
-    "binding": "ASSETS",
-  },
 }

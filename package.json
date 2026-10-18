@@ -10,7 +10,7 @@
     "dev:fresh": "node scripts/stop-astro-dev.mjs && node scripts/clear-vite-cache.mjs && astro dev --background --host",
     "build": "vite-node scripts/generate-color-themes.mjs && astro build",
     "preview": "astro preview",
-    "deploy": "npm run build && wrangler deploy",
+    "deploy": "npm run build && wrangler deploy --config dist/server/wrangler.json",
     "astro": "astro",
     "test": "vitest run",
     "test:watch": "vitest",
