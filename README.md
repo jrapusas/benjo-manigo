@@ -280,7 +280,7 @@ The site uses **static prerendering** for public pages and **on-demand routes** 
 | Build output directory | `dist/client` (also set in `wrangler.jsonc` as `pages_build_output_dir`) |
 | Node version | `22` (`.nvmrc` / `NODE_VERSION` env) |
 
-If the dashboard still shows **No build command specified**, set **Build command** to `npm run build` manually. Wrangler only declares the output folder and runtime flags.
+Build command is declared in `wrangler.jsonc` (`build.command`). If a deploy log still says **No build command specified**, set **Build command** to `npm run build` in the Pages dashboard as well (some project types only read one source).
 
 Do **not** set the output directory to the repo root (`.`). A broken `.context/project` symlink used to live in git and triggers: *build output directory contains links to files that can't be accessed*.
 
