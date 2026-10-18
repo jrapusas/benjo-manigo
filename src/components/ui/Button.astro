@@ -1,0 +1,25 @@
+---
+// UI PRIMITIVE - reusable button link. Props typed locally; `class` renamed to avoid HTML keyword clash.
+
+type Variant = 'primary' | 'secondary' | 'ghost'; // string union type - only these three values allowed
+
+interface Props {
+  href: string;
+  variant?: Variant;
+  class?: string; // Astro/HTML attribute name; we rename when destructuring
+}
+
+// `class: className` - rename prop because `class` is reserved in JS
+const { href, variant = 'primary', class: className = '' } = Astro.props;
+
+const variants: Record<Variant, string> = {
+  primary: 'btn btn-primary',
+  secondary: 'btn btn-secondary',
+  ghost: 'btn btn-ghost',
+};
+---
+
+<!-- <slot /> - child text/nodes passed between opening and closing tags render here -->
+<a href={href} class:list={[variants[variant], className]}>
+  <slot />
+</a>

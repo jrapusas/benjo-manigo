@@ -1,0 +1,202 @@
+---
+import Container from '../ui/Container.astro';
+import Section from '../ui/Section.astro';
+import BlockHeader from '../ui/BlockHeader.astro';
+import Button from '../ui/Button.astro';
+import ContentSlider from '../ui/ContentSlider.astro';
+import MediaImage from '../ui/MediaImage.astro';
+import type { BlockValue } from '../../lib/types';
+import { hasText, isSliderVariant } from '../../lib/blockFields';
+import { GALLERY_CATEGORIES } from '../../lib/gallery/categories';
+
+const BLEED_GRID_BASE =
+  'gallery-bleed-half-layout grid w-full grid-cols-1 lg:aspect-[80/33] lg:items-stretch';
+const BLEED_SPLIT_IMAGE_FIRST = 'lg:grid-cols-[55fr_45fr]';
+const BLEED_SPLIT_TEXT_FIRST = 'lg:grid-cols-[45fr_55fr]';
+const BLEED_IMAGE_SIZES = '(min-width: 1024px) 55vw, 100vw';
+const BLEED_IMAGE_CELL =
+  'relative min-h-0 w-full aspect-[4/3] overflow-hidden lg:aspect-auto lg:h-full';
+const BLEED_COPY_CELL =
+  'gallery-bleed-half-copy flex min-h-0 w-full flex-col justify-center gap-block py-block-inset max-lg:px-[var(--site-margin)] lg:h-full';
+const BLEED_IMAGE_FIT = 'media-cover absolute inset-0 h-full w-full object-[center_35%]';
+
+function hrefForCaption(caption: string | null | undefined) {
+  if (!caption) return undefined;
+  const category = GALLERY_CATEGORIES.find((entry) => entry.label === caption);
+  return category ? `/work/${category.slug}` : undefined;
+}
+
+interface Props extends BlockValue<'gallery'> {}
+
+const { color, appearance, heading, description, variant, images = [] } = Astro.props;
+const visibleImages = images.filter((item) => item.image);
+const isSlider = isSliderVariant(variant);
+const isBleedHalf = variant === 'splitImageBleedHalf';
+const templateClass = isSlider
+  ? 'section-gallery-slider'
+  : isBleedHalf
+    ? 'section-gallery section-gallery-bleed-half'
+    : 'section-gallery section-gallery-vitrine';
+---
+
+<Section
+  color={color}
+  appearance={appearance ?? 'default'}
+  class={templateClass}
+  padding={isBleedHalf ? 'none' : 'default'}
+>
+  {
+    isBleedHalf ? (
+      <>
+        <Container class="section-padding">
+          <BlockHeader heading={heading} description={description} />
+        </Container>
+        <div class="flex flex-col">
+          {
+            visibleImages.map((item, index) => {
+              const imageFirst = index % 2 === 0;
+              const categoryHref = hrefForCaption(item.caption);
+              const alt = item.caption ?? '';
+
+              const splitGrid = imageFirst ? BLEED_SPLIT_IMAGE_FIRST : BLEED_SPLIT_TEXT_FIRST;
+
+              return (
+                <article
+                  class="gallery-bleed-half-item overflow-hidden border-t border-subtle"
+                >
+                  <div class:list={[BLEED_GRID_BASE, splitGrid]}>
+                    {
+                      imageFirst ? (
+                        <>
+                          {item.image && (
+                            <div class={BLEED_IMAGE_CELL}>
+                              <MediaImage
+                                src={item.image}
+                                alt={alt}
+                                class={BLEED_IMAGE_FIT}
+                                sizes={BLEED_IMAGE_SIZES}
+                              />
+                            </div>
+                          )}
+                          <div
+                            class:list={[
+                              BLEED_COPY_CELL,
+                              'gallery-bleed-half-copy--after-image',
+                            ]}
+                          >
+                            {hasText(item.caption) && (
+                              <h3 class="block-heading">{item.caption}</h3>
+                            )}
+                            {categoryHref && (
+                              <div class="pt-stack-2">
+                                <Button href={categoryHref} variant="secondary">
+                                  View {item.caption}
+                                </Button>
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div
+                            class:list={[
+                              BLEED_COPY_CELL,
+                              'order-2 lg:order-none',
+                              'gallery-bleed-half-copy--before-image',
+                            ]}
+                          >
+                            {hasText(item.caption) && (
+                              <h3 class="block-heading">{item.caption}</h3>
+                            )}
+                            {categoryHref && (
+                              <div class="pt-stack-2">
+                                <Button href={categoryHref} variant="secondary">
+                                  View {item.caption}
+                                </Button>
+                              </div>
+                            )}
+                          </div>
+                          {item.image && (
+                            <div class:list={[BLEED_IMAGE_CELL, 'order-1 lg:order-none']}>
+                              <MediaImage
+                                src={item.image}
+                                alt={alt}
+                                class={BLEED_IMAGE_FIT}
+                                sizes={BLEED_IMAGE_SIZES}
+                              />
+                            </div>
+                          )}
+                        </>
+                      )
+                    }
+                  </div>
+                </article>
+              );
+            })
+          }
+        </div>
+      </>
+    ) : (
+      <Container>
+        <BlockHeader heading={heading} description={description} />
+        {
+          isSlider ? (
+            <ContentSlider cols={3} label={heading || 'Gallery'}>
+              {
+                visibleImages.map((item) => (
+                  <figure class="card card-hover card-fill group overflow-hidden p-0">
+                    <div class="painting-cell relative aspect-[4/3] overflow-hidden">
+                      <MediaImage
+                        src={item.image}
+                        alt={item.caption ?? ''}
+                        class="media-contain media-hover-zoom relative max-h-full max-w-full"
+                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      />
+                    </div>
+                  </figure>
+                ))
+              }
+            </ContentSlider>
+          ) : (
+            <div class="salon-hang">
+              {
+                visibleImages.map((item) => {
+                  const categoryHref = hrefForCaption(item.caption);
+                  const inner = (
+                    <>
+                      <div class="painting-cell salon-mat">
+                        <MediaImage
+                          src={item.image}
+                          alt={item.caption ?? ''}
+                          class="media-hover-zoom salon-image"
+                          sizes="(min-width: 1024px) 50vw, 100vw"
+                        />
+                      </div>
+                      {hasText(item.caption) && (
+                        <figcaption class="salon-placard">
+                          <span class="salon-placard-title">{item.caption}</span>
+                          {categoryHref && <span class="salon-placard-link" aria-hidden="true">View genre →</span>}
+                        </figcaption>
+                      )}
+                    </>
+                  );
+                  return (
+                    <figure class="salon-item group">
+                      {categoryHref ? (
+                        <a href={categoryHref} class="salon-link">
+                          {inner}
+                        </a>
+                      ) : (
+                        inner
+                      )}
+                    </figure>
+                  );
+                })
+              }
+            </div>
+          )
+        }
+      </Container>
+    )
+  }
+</Section>

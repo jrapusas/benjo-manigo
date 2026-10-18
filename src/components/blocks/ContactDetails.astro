@@ -1,0 +1,162 @@
+---
+import Container from '../ui/Container.astro';
+import Section from '../ui/Section.astro';
+import BlockHeader from '../ui/BlockHeader.astro';
+import Button from '../ui/Button.astro';
+import type { BlockValue } from '../../lib/types';
+import { hasButton, hasText } from '../../lib/blockFields';
+
+interface Props extends BlockValue<'contactDetails'> {}
+
+const {
+  color,
+  appearance,
+  heading,
+  description,
+  email,
+  phone,
+  address,
+  embedUrl,
+  button,
+} = Astro.props;
+const templateClass = 'section-contact-details';
+const hasMap = hasText(embedUrl);
+const directionsUrl = hasText(address)
+  ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address.replace(/\n/g, ', '))}`
+  : null;
+---
+
+<Section color={color} appearance={appearance ?? 'soft'} class={templateClass}>
+  <Container narrow={!hasMap}>
+    {
+      hasMap ? (
+        <>
+          <BlockHeader heading={heading} description={description} align="left" class="mb-stack-10" />
+          <div class="grid gap-block-lg lg:grid-cols-2 lg:gap-layout-sm">
+            <div class="card block-card">
+              <dl class="grid gap-block-lg sm:grid-cols-2">
+                {
+                  hasText(email) && (
+                    <div>
+                      <dt class="block-meta">Email</dt>
+                      <dd class="mt-stack-2">
+                        <a href={`mailto:${email}`} class="font-medium text-interactive">
+                          {email}
+                        </a>
+                      </dd>
+                    </div>
+                  )
+                }
+                {
+                  hasText(phone) && (
+                    <div>
+                      <dt class="block-meta">Phone</dt>
+                      <dd class="mt-stack-2">
+                        <a
+                          href={`tel:${phone.replace(/\s/g, '')}`}
+                          class="font-medium text-interactive"
+                        >
+                          {phone}
+                        </a>
+                      </dd>
+                    </div>
+                  )
+                }
+                {
+                  hasText(address) && (
+                    <div class="sm:col-span-2">
+                      <dt class="block-meta">Address</dt>
+                      <dd class="mt-stack-2 block-body whitespace-pre-line text-muted">
+                        {address}
+                      </dd>
+                      {
+                        directionsUrl && (
+                          <a
+                            href={directionsUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="block-link mt-stack-4"
+                          >
+                            Get directions
+                            <span aria-hidden="true">→</span>
+                          </a>
+                        )
+                      }
+                    </div>
+                  )
+                }
+              </dl>
+              {
+                hasButton(button) && (
+                  <div class="mt-stack-8 border-t border-subtle pt-stack-8">
+                    <Button href={button.url}>{button.label}</Button>
+                  </div>
+                )
+              }
+            </div>
+            <div
+              class="media-frame relative aspect-[4/3] overflow-hidden lg:aspect-auto lg:h-full"
+
+            >
+              <iframe
+                src={embedUrl}
+                title={heading ?? 'Map'}
+                class="absolute inset-0 h-full w-full border-0"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          </div>
+        </>
+      ) : (
+        <div class="card block-card">
+          <BlockHeader heading={heading} description={description} align="left" class="!mb-stack-8" />
+          <dl class="grid gap-block-lg sm:grid-cols-2">
+            {
+              hasText(email) && (
+                <div>
+                  <dt class="block-meta">Email</dt>
+                  <dd class="mt-stack-2">
+                    <a href={`mailto:${email}`} class="font-medium text-interactive">
+                      {email}
+                    </a>
+                  </dd>
+                </div>
+              )
+            }
+            {
+              hasText(phone) && (
+                <div>
+                  <dt class="block-meta">Phone</dt>
+                  <dd class="mt-stack-2">
+                    <a
+                      href={`tel:${phone.replace(/\s/g, '')}`}
+                      class="font-medium text-interactive"
+                    >
+                      {phone}
+                    </a>
+                  </dd>
+                </div>
+              )
+            }
+            {
+              hasText(address) && (
+                <div class="sm:col-span-2">
+                  <dt class="block-meta">Address</dt>
+                  <dd class="mt-stack-2 block-body whitespace-pre-line text-muted">{address}</dd>
+                </div>
+              )
+            }
+          </dl>
+          {
+            hasButton(button) && (
+              <div class="mt-stack-8 border-t border-subtle pt-stack-8">
+                <Button href={button.url}>{button.label}</Button>
+              </div>
+            )
+          }
+        </div>
+      )
+    }
+  </Container>
+</Section>

@@ -1,0 +1,58 @@
+---
+import { Image } from 'astro:assets';
+import { resolveMedia } from '../../lib/media';
+
+interface Props {
+  src?: string | null;
+  alt?: string;
+  class?: string;
+  sizes?: string;
+  widths?: number[];
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  decoding?: 'async' | 'auto' | 'sync';
+}
+
+const {
+  src,
+  alt = '',
+  class: className,
+  sizes = '100vw',
+  widths = [480, 768, 1024, 1280, 1600, 1920],
+  loading = 'lazy',
+  fetchpriority,
+  decoding = 'async',
+} = Astro.props;
+
+const media = src ? await resolveMedia(src) : null;
+const resolvedAlt = alt || media?.alt || '';
+const fallbackSrc =
+  media?.src ||
+  (src && (src.startsWith('/') || src.startsWith('http')) ? src : null);
+---
+
+{
+  media?.image ? (
+    <Image
+      src={media.image}
+      alt={resolvedAlt}
+      widths={widths}
+      sizes={sizes}
+      format="webp"
+      quality={80}
+      class={className}
+      loading={loading}
+      fetchpriority={fetchpriority}
+      decoding={decoding}
+    />
+  ) : fallbackSrc ? (
+    <img
+      src={fallbackSrc}
+      alt={resolvedAlt}
+      class={className}
+      loading={loading}
+      fetchpriority={fetchpriority}
+      decoding={decoding}
+    />
+  ) : null
+}

@@ -1,0 +1,70 @@
+---
+// Semantic <section> wrapper - color × appearance drives the computational theme.
+
+import { getResolvedSitePalette } from '../../lib/sitePalette';
+import {
+  parseAppearanceIntent,
+  resolveSectionColor,
+} from '../../lib/sectionStyle';
+import {
+  LEGACY_TONE_TO_APPEARANCE,
+  type AppearanceName,
+  type BaseColorName,
+  type LegacySectionTone,
+} from '../../lib/color/types';
+
+export type SectionAppearance = AppearanceName;
+export type SectionColor = BaseColorName;
+
+/** @deprecated Use appearance instead - mapped automatically when tone is set. */
+export type SectionTone = LegacySectionTone;
+
+interface Props {
+  /** Brand hue - auto uses site palette from Colors settings. */
+  color?: SectionColor | 'auto' | null;
+  /** Tonal appearance mode. */
+  appearance?: SectionAppearance | null;
+  /** @deprecated Legacy tone - maps to appearance. */
+  tone?: SectionTone;
+  class?: string;
+  id?: string;
+  padding?: 'default' | 'large' | 'none';
+}
+
+const {
+  color = 'auto',
+  appearance,
+  tone,
+  class: className = '',
+  id,
+  padding = 'default',
+} = Astro.props;
+
+const sitePalette = getResolvedSitePalette();
+
+const resolvedColor = resolveSectionColor(color, sitePalette);
+const appearanceInput =
+  appearance ??
+  (tone && tone in LEGACY_TONE_TO_APPEARANCE
+    ? (LEGACY_TONE_TO_APPEARANCE[tone] as AppearanceName)
+    : null);
+const { tone: resolvedTone, backgroundStyle } =
+  parseAppearanceIntent(appearanceInput);
+
+const paddingClasses = {
+  default: 'section-padding',
+  large: 'section-padding-lg',
+  none: '',
+};
+---
+
+<section
+  id={id}
+  data-color={resolvedColor}
+  data-appearance={resolvedTone}
+  {...backgroundStyle === 'gradient' ? { 'data-background-style': 'gradient' } : {}}
+  {...tone ? { 'data-tone': tone } : {}}
+  class:list={['appearance-section', 'border-t', 'border-subtle', paddingClasses[padding], className]}
+>
+  <slot />
+</section>

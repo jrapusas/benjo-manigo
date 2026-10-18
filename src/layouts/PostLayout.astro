@@ -1,0 +1,104 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Blocks from '../components/blocks/Blocks.astro';
+import Container from '../components/ui/Container.astro';
+import MediaImage from '../components/ui/MediaImage.astro';
+import { getResolvedSitePalette } from '../lib/sitePalette';
+import type { ContentBlock } from '../lib/types';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  publishedDate: string;
+  excerpt: string;
+  featuredImage?: string | null;
+  blocks?: ContentBlock[] | null;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogTitle,
+  ogDescription,
+  ogImage,
+  publishedDate,
+  excerpt,
+  featuredImage,
+  blocks,
+} = Astro.props;
+
+const formattedDate = new Date(publishedDate).toLocaleDateString('en-AU', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+const sitePalette = getResolvedSitePalette();
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  ogTitle={ogTitle}
+  ogDescription={ogDescription}
+  ogImage={ogImage ?? featuredImage ?? undefined}
+>
+  <article>
+    <Section
+      color={sitePalette.color}
+      appearance="soft"
+      padding="large"
+      class="section-post-header border-b border-subtle"
+    >
+      <Container narrow>
+        <div class="mx-auto max-w-3xl">
+          <p class="block-eyebrow">{formattedDate}</p>
+          <h1 class="post-title">{title}</h1>
+          <p class="post-excerpt">{excerpt}</p>
+          {
+            featuredImage && (
+              <div class="post-featured media-frame relative mt-8 aspect-[16/9]">
+                <MediaImage
+                  src={featuredImage}
+                  alt=""
+                  class="media-cover absolute inset-0"
+                  sizes="(min-width: 768px) 48rem, 100vw"
+                  loading="eager"
+                />
+              </div>
+            )
+          }
+        </div>
+      </Container>
+    </Section>
+    <Blocks blocks={blocks} />
+  </article>
+</BaseLayout>
+
+<style>
+  .post-title {
+    margin-top: 0.75rem;
+    font-family: var(--font-display);
+    font-size: var(--text-h1);
+    line-height: var(--leading-h1);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .post-excerpt {
+    margin-top: 1.25rem;
+    max-width: 42rem;
+    font-family: var(--font-sans);
+    font-size: var(--text-body-lg);
+    line-height: var(--leading-body-lg);
+    color: var(--color-subheading, var(--color-muted-fg));
+    text-wrap: balance;
+  }
+</style>

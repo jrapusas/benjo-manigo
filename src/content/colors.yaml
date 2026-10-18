@@ -1,0 +1,7 @@
+palette:
+  color: custom
+  custom:
+    background: '#f7f5f2'
+    text: '#2a2826'
+    buttonBg: '#b8a066'
+    buttonText: '#1a1816'

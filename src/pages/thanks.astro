@@ -1,0 +1,55 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import Container from '../components/ui/Container.astro';
+import Section from '../components/ui/Section.astro';
+import Button from '../components/ui/Button.astro';
+import { buildSeo } from '../lib/seo';
+import { siteConfig } from '../config/site';
+
+const facebookPhotos = siteConfig.social?.facebookPhotos;
+
+const seo = buildSeo({
+  title: 'Thank you',
+  seoTitle: 'Thank you · Jonathan “Benjo” Manigo — Oil Paintings',
+  metaDescription: 'Your commission inquiry was received.',
+  path: '/thanks',
+});
+---
+
+<PageLayout
+  title={seo.title}
+  description={seo.description}
+  canonical={seo.canonical}
+  ogTitle={seo.openGraph.title}
+  ogDescription={seo.openGraph.description}
+  ogImage={seo.openGraph.image}
+>
+  <Section color="auto" appearance="default" class="section-thanks">
+    <Container class="mx-auto max-w-2xl text-center">
+      <h1 class="block-heading">Thank you</h1>
+      <p class="hero-placard mt-stack-2">Commission inquiry received</p>
+      <p class="mt-stack-3 block-body text-muted">
+        We received your message. Jon will review your inquiry and follow up by email.
+      </p>
+      <div class="mt-stack-8 flex flex-col items-center justify-center gap-block-sm sm:flex-row">
+        <Button href="/work" variant="primary">
+          View work
+        </Button>
+        <Button href="/commission" variant="secondary">
+          Back to commission page
+        </Button>
+      </div>
+      {
+        facebookPhotos ? (
+          <p class="mt-stack-4 text-sm text-muted">
+            More work on{' '}
+            <a href={facebookPhotos} class="block-link" rel="noopener noreferrer" target="_blank">
+              Facebook
+            </a>
+            .
+          </p>
+        ) : null
+      }
+    </Container>
+  </Section>
+</PageLayout>

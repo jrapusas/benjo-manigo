@@ -1,0 +1,51 @@
+title: Home
+seoTitle: Home · Jonathan “Benjo” Manigo — Oil Paintings
+metaDescription: >-
+  Gallery of oil paintings by Filipino artist Jonathan “Benjo” Manigo — portraits,
+  landscapes, seascapes, floral, still life, animals, Christian themes, and rural life.
+blocks:
+  - discriminant: hero
+    value:
+      color: auto
+      appearance: dark
+      eyebrow: Oil paintings · Philippines
+      title: Jonathan “Benjo” Manigo
+      description: >-
+        A gallery of original oil paintings — portraits, landscapes, seascapes,
+        still life, and more. Browse by genre on the Work page.
+      primaryCta:
+        label: View gallery
+        url: /work
+      secondaryCta:
+        label: About the artist
+        url: /about
+      image: /images/gallery/animals/animals-09-galloping-horses.webp
+      variant: splitImageContained
+  - discriminant: richText
+    value:
+      color: auto
+      appearance: default
+  - discriminant: gallery
+    value:
+      color: auto
+      appearance: default
+      heading: Featured paintings
+      description: A selection across genres. See every work on the Work page.
+      variant: grid
+      images:
+        - image: /images/gallery/portraits/portraits-13-artist-self-portrait-veils.webp
+          caption: Portraits
+        - image: /images/gallery/landscapes/landscapes-03-river-carabao-bahay-kubo.webp
+          caption: Landscapes
+        - image: /images/gallery/christian/christian-07-conversion-st-paul.webp
+          caption: Christian
+        - image: /images/gallery/floral/floral-10-sunflowers-field.webp
+          caption: Floral
+        - image: /images/gallery/animals/animals-04-galloping-horses-2026.webp
+          caption: Animals
+        - image: /images/gallery/seascapes/seascapes-02-bangka-girl-coastal-cove.webp
+          caption: Seascapes
+        - image: /images/gallery/still-life/still-life-01-harvest-produce-fish.webp
+          caption: Still life
+        - image: /images/gallery/rural-life/rural-life-06-rice-threshing.webp
+          caption: Rural life

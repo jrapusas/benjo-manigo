@@ -1,0 +1,53 @@
+---
+import { reader } from '../lib/reader';
+import PageLayout from '../layouts/PageLayout.astro';
+import Container from '../components/ui/Container.astro';
+import Section from '../components/ui/Section.astro';
+import CommissionInquiryForm from '../components/forms/CommissionInquiryForm';
+import { resolveMediaSrc } from '../lib/media';
+import { buildSeo } from '../lib/seo';
+
+const page = await reader.collections.pages.read('commission', {
+  resolveLinkedFiles: true,
+});
+
+if (!page) {
+  throw new Error('Commission page not found in Keystatic (slug commission).');
+}
+
+const ogImage = await resolveMediaSrc(page.ogImage);
+
+const seo = buildSeo({
+  title: page.title,
+  path: '/commission',
+  seoTitle: page.seoTitle,
+  metaDescription: page.metaDescription,
+  canonicalUrl: page.canonicalUrl,
+  ogTitle: page.ogTitle,
+  ogDescription: page.ogDescription,
+  ogImage,
+});
+---
+
+<PageLayout
+  title={seo.title}
+  description={seo.description}
+  canonical={seo.canonical}
+  ogTitle={seo.openGraph.title}
+  ogDescription={seo.openGraph.description}
+  ogImage={seo.openGraph.image}
+  blocks={page.blocks}
+>
+  <Section color="auto" appearance="default" class="section-commission-form">
+    <Container>
+      <h2 class="block-heading text-center">Send your inquiry</h2>
+      <p class="mx-auto mt-stack-2 max-w-2xl text-center block-body text-muted">
+        Fields marked with * are required. Jon reviews every submission and connects you with Benjo
+        for pricing and timeline.
+      </p>
+      <div class="mt-stack-8">
+        <CommissionInquiryForm client:load />
+      </div>
+    </Container>
+  </Section>
+</PageLayout>

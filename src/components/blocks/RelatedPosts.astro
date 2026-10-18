@@ -1,0 +1,117 @@
+---
+import Container from '../ui/Container.astro';
+import Section from '../ui/Section.astro';
+import BlockHeader from '../ui/BlockHeader.astro';
+import ContentSlider from '../ui/ContentSlider.astro';
+import { reader } from '../../lib/reader';
+import { resolveMedia } from '../../lib/media';
+import { isSliderVariant } from '../../lib/blockFields';
+import type { BlockValue } from '../../lib/types';
+import MediaImage from '../ui/MediaImage.astro';
+
+interface Props extends BlockValue<'relatedPosts'> {}
+
+const { color, appearance, heading, variant, posts = [] } = Astro.props;
+const isSlider = isSliderVariant(variant);
+const templateClass = isSlider ? 'section-relatedposts-slider' : 'section-relatedposts';
+
+const entries = await Promise.all(
+  posts.map(async (slug) => {
+    const entry = await reader.collections.posts.read(slug);
+    if (!entry) return null;
+    const featured = await resolveMedia(entry.featuredImage);
+    return {
+      slug,
+      ...entry,
+      featuredImage: entry.featuredImage,
+      featuredImageAlt: featured?.alt || entry.title,
+    };
+  }),
+);
+const resolved = entries.filter(Boolean);
+---
+
+{
+  resolved.length > 0 && (
+    <Section color={color} appearance={appearance ?? 'soft'} class={templateClass}>
+      <Container>
+        <BlockHeader heading={heading} align="left" />
+        {
+          isSlider ? (
+            <ContentSlider cols={3} label={heading || 'Related posts'}>
+              {
+                resolved.map((entry) => (
+                  <article
+                    class="card card-hover card-fill group overflow-hidden p-0"
+
+                  >
+                    {entry.featuredImage && (
+                      <div class="relative h-48 overflow-hidden bg-[color-mix(in_srgb,var(--color-text)_4%,var(--color-background))]">
+                        <MediaImage
+                          src={entry.featuredImage}
+                          alt={entry.featuredImageAlt}
+                          class="media-cover media-hover-zoom absolute inset-0"
+                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                        />
+                      </div>
+                    )}
+                    <div class="flex flex-1 flex-col block-card pt-stack-5">
+                      <h3 class="block-item-title-lg text-balance">
+                        <a href={`/blog/${entry.slug}`} class="text-interactive hover:underline">
+                          {entry.title}
+                        </a>
+                      </h3>
+                      <p class="mt-stack-3 flex-1 block-body-sm text-muted text-balance">
+                        {entry.excerpt}
+                      </p>
+                      <a href={`/blog/${entry.slug}`} class="block-link mt-stack-5">
+                        Read more
+                        <span aria-hidden="true">→</span>
+                      </a>
+                    </div>
+                  </article>
+                ))
+              }
+            </ContentSlider>
+          ) : (
+            <div class="item-grid item-grid-cols-3">
+              {
+                resolved.map((entry) => (
+                  <article
+                    class="card card-hover card-fill group overflow-hidden p-0"
+
+                  >
+                    {entry.featuredImage && (
+                      <div class="relative h-48 overflow-hidden bg-[color-mix(in_srgb,var(--color-text)_4%,var(--color-background))]">
+                        <MediaImage
+                          src={entry.featuredImage}
+                          alt={entry.featuredImageAlt}
+                          class="media-cover media-hover-zoom absolute inset-0"
+                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                        />
+                      </div>
+                    )}
+                    <div class="flex flex-1 flex-col block-card pt-stack-5">
+                      <h3 class="block-item-title-lg text-balance">
+                        <a href={`/blog/${entry.slug}`} class="text-interactive hover:underline">
+                          {entry.title}
+                        </a>
+                      </h3>
+                      <p class="mt-stack-3 flex-1 block-body-sm text-muted text-balance">
+                        {entry.excerpt}
+                      </p>
+                      <a href={`/blog/${entry.slug}`} class="block-link mt-stack-5">
+                        Read more
+                        <span aria-hidden="true">→</span>
+                      </a>
+                    </div>
+                  </article>
+                ))
+              }
+            </div>
+          )
+        }
+      </Container>
+    </Section>
+  )
+}

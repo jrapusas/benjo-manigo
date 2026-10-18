@@ -1,0 +1,22 @@
+---
+import { isArtistDisplayName } from '../../lib/artistName';
+import ArtistNameStack from './ArtistNameStack.astro';
+
+interface Props {
+  title: string;
+  class?: string;
+  stackClass?: string;
+}
+
+const { title, class: headingClass = '', stackClass = '' } = Astro.props;
+---
+
+{
+  isArtistDisplayName(title) ? (
+    <h1 class={headingClass}>
+      <ArtistNameStack class={stackClass} />
+    </h1>
+  ) : (
+    <h1 class={headingClass}>{title}</h1>
+  )
+}

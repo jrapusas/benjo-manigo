@@ -1,0 +1,39 @@
+---
+import { hasText } from '../../lib/blockFields';
+
+interface Props {
+  heading?: string;
+  description?: string;
+  align?: 'center' | 'left';
+  headingLevel?: 1 | 2;
+  class?: string;
+}
+
+const { heading, description, align = 'center', headingLevel = 2, class: className = '' } =
+  Astro.props;
+---
+
+{
+  (hasText(heading) || hasText(description)) && (
+    <div
+      class:list={[
+        'block-header',
+        align === 'center' && 'mx-auto max-w-2xl text-center',
+        align === 'left' && 'max-w-2xl',
+        className,
+      ]}
+    >
+      {
+        hasText(heading) &&
+          (headingLevel === 1 ? (
+            <h1 class="block-heading">{heading}</h1>
+          ) : (
+            <h2 class="block-heading">{heading}</h2>
+          ))
+      }
+      {hasText(description) && (
+        <p class="block-description max-w-2xl leading-relaxed">{description}</p>
+      )}
+    </div>
+  )
+}

@@ -1,0 +1,32 @@
+{
+  "home": {
+    "id": "home",
+    "label": "Home",
+    "collection": "pages",
+    "source": "home"
+  },
+  "about": {
+    "id": "about",
+    "label": "About",
+    "collection": "pages",
+    "source": "about"
+  },
+  "services": {
+    "id": "services",
+    "label": "Services",
+    "collection": "pages",
+    "source": "services"
+  },
+  "contact": {
+    "id": "contact",
+    "label": "Contact",
+    "collection": "pages",
+    "source": "contact"
+  },
+  "blog-post": {
+    "id": "blog-post",
+    "label": "Blog post",
+    "collection": "posts",
+    "source": "strategic-planning-that-sticks"
+  }
+}

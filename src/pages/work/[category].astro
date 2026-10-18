@@ -1,0 +1,56 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import PaintingMasonry from '../../components/blocks/PaintingMasonry.astro';
+import {
+  galleryCategoryLabel,
+  isGalleryCategorySlug,
+  listPaintingsForCategory,
+} from '../../lib/gallery/load';
+import { buildSeo } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const { GALLERY_CATEGORY_SLUGS } = await import('../../lib/gallery/categories');
+  return GALLERY_CATEGORY_SLUGS.map((category) => ({ params: { category } }));
+}
+
+const { category } = Astro.params;
+if (!category || !isGalleryCategorySlug(category)) {
+  return Astro.redirect('/404');
+}
+
+const paintings = listPaintingsForCategory(category);
+const label = galleryCategoryLabel(category);
+
+const seo = buildSeo({
+  title: label,
+  seoTitle: `${label} · Jonathan “Benjo” Manigo — Oil Paintings`,
+  metaDescription: `${label} oil paintings by Jonathan “Benjo” Manigo.`,
+  path: `/work/${category}`,
+  ogImage: paintings[0]?.src,
+});
+
+---
+
+<PageLayout
+  title={seo.title}
+  description={seo.description}
+  canonical={seo.canonical}
+  ogTitle={seo.openGraph.title}
+  ogDescription={seo.openGraph.description}
+  ogImage={seo.openGraph.image}
+>
+  <PaintingMasonry
+    color="auto"
+    appearance="default"
+    heading={label}
+    headingLevel={1}
+    scope={category}
+  >
+    <p class="work-genre-cta">
+      <a href="/work" class="block-link">
+        All genres
+        <span aria-hidden="true"> →</span>
+      </a>
+    </p>
+  </PaintingMasonry>
+</PageLayout>

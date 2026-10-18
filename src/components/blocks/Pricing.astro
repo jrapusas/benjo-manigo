@@ -1,0 +1,125 @@
+---
+import Container from '../ui/Container.astro';
+import Section from '../ui/Section.astro';
+import BlockHeader from '../ui/BlockHeader.astro';
+import Button from '../ui/Button.astro';
+import { getResolvedSitePalette } from '../../lib/sitePalette';
+import { resolveSectionColor } from '../../lib/sectionStyle';
+import type { BlockValue } from '../../lib/types';
+import { hasButton, hasText } from '../../lib/blockFields';
+
+interface Props extends BlockValue<'pricing'> {}
+
+const { color, appearance, heading, description, plans = [] } = Astro.props;
+const visiblePlans = plans.filter((plan) => hasText(plan.name) || hasText(plan.price));
+const sitePalette = getResolvedSitePalette();
+const planColor = resolveSectionColor(color, sitePalette);
+const templateClass = 'section-pricing';
+---
+
+<Section color={color} appearance={appearance ?? 'default'} class={templateClass}>
+  <Container>
+    <BlockHeader heading={heading} description={description} />
+    <div class="item-grid item-grid-cols-3">
+      {
+        visiblePlans.map((plan) => (
+          <article
+            class:list={[
+              'card card-fill block-card relative text-center',
+              plan.highlighted
+                ? 'pricing-card-highlighted appearance-section z-[1] shadow-lg ring-2 ring-[var(--color-button-bg)]'
+                : 'card-hover',
+            ]}
+            data-color={plan.highlighted ? planColor : undefined}
+            data-appearance={plan.highlighted ? 'accent' : undefined}
+
+          >
+            <p
+              class:list={[
+                'mb-stack-3 mx-auto inline-flex rounded-full px-3 py-1 block-meta',
+                plan.highlighted
+                  ? 'bg-[color-mix(in_srgb,var(--color-button-text)_12%,var(--color-background))] text-section-muted'
+                  : 'invisible',
+              ]}
+              aria-hidden={!plan.highlighted}
+            >
+              Most popular
+            </p>
+            {hasText(plan.name) && <h3 class="block-item-title-lg">{plan.name}</h3>}
+            {(hasText(plan.price) || hasText(plan.period)) && (
+              <p class="mt-stack-4">
+                {hasText(plan.price) && (
+                  <span class="block-stat">{plan.price}</span>
+                )}
+                {hasText(plan.period) && (
+                  <span
+                    class:list={[
+                      'ml-1 block-body-sm',
+                      plan.highlighted ? 'text-section-muted' : 'text-muted-subtle',
+                    ]}
+                  >
+                    / {plan.period}
+                  </span>
+                )}
+              </p>
+            )}
+            {plan.description && (
+              <p
+                class:list={[
+                  'mt-stack-4 block-body-sm text-balance',
+                  plan.highlighted ? 'text-section-subtle' : 'text-muted',
+                ]}
+              >
+                {plan.description}
+              </p>
+            )}
+            {plan.features && plan.features.length > 0 && (
+              <ul
+                class:list={[
+                  'mx-auto mt-stack-6 flex-1 space-y-2.5 text-left block-body-sm',
+                  plan.highlighted ? 'text-section-subtle' : 'text-muted',
+                ]}
+              >
+                {
+                  plan.features.map((feature) => (
+                    <li class="flex items-start gap-block-sm">
+                      <span
+                        class:list={[
+                          'mt-stack-1 shrink-0 font-bold',
+                          plan.highlighted ? 'text-section-muted' : 'text-interactive',
+                        ]}
+                        aria-hidden="true"
+                      >
+                        ✓
+                      </span>
+                      <span class="min-w-0">{typeof feature === 'string' ? feature : feature.text}</span>
+                    </li>
+                  ))
+                }
+              </ul>
+            )}
+            {hasButton(plan.button) && (
+              <div class="mt-auto pt-stack-8">
+                <Button
+                  href={plan.button.url}
+                  variant={plan.highlighted ? 'secondary' : 'primary'}
+                  class="w-full justify-center"
+                >
+                  {plan.button.label}
+                </Button>
+              </div>
+            )}
+          </article>
+        ))
+      }
+    </div>
+  </Container>
+</Section>
+
+<style>
+  @media (width >= 64rem) {
+    .pricing-card-highlighted {
+      transform: scale(1.03);
+    }
+  }
+</style>

@@ -1,0 +1,52 @@
+---
+import Container from '../ui/Container.astro';
+import Section from '../ui/Section.astro';
+import BlockHeader from '../ui/BlockHeader.astro';
+import PaintingLightbox from '../gallery/PaintingLightbox';
+import {
+  isGalleryCategorySlug,
+  listAllPaintings,
+  listPaintingsForCategory,
+} from '../../lib/gallery/load';
+import type { BlockValue } from '../../lib/types';
+
+interface Props extends BlockValue<'paintingMasonry'> {
+  headingLevel?: 1 | 2;
+}
+
+const {
+  color,
+  appearance,
+  heading,
+  description,
+  scope = 'all',
+  headingLevel = 2,
+} = Astro.props;
+
+const paintings =
+  scope && scope !== 'all' && isGalleryCategorySlug(scope)
+    ? listPaintingsForCategory(scope)
+    : listAllPaintings();
+
+const lightboxItems = paintings.map((painting) => ({
+  src: painting.src,
+  alt: painting.alt,
+}));
+---
+
+<Section
+  color={color}
+  appearance={appearance ?? 'default'}
+  class="section-painting-masonry"
+  id="all-paintings"
+>
+  <Container>
+    <BlockHeader heading={heading} description={description} headingLevel={headingLevel} />
+    {lightboxItems.length > 0 ? (
+      <PaintingLightbox client:visible items={lightboxItems} layout="masonry" />
+    ) : (
+      <p class="block-body text-muted">No paintings in this gallery yet.</p>
+    )}
+    <slot />
+  </Container>
+</Section>

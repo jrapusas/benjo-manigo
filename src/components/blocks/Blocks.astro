@@ -1,0 +1,23 @@
+---
+// BLOCK ROUTER - picks the right Astro component for each Keystatic content block.
+// Pages pass page.blocks here; each block is { discriminant: 'hero', value: { title, ... } }.
+
+import type { ContentBlock } from '../../lib/types';
+import { blockComponents } from '../../lib/blocks';
+import { resolveBlocksMedia } from '../../lib/resolveBlockMedia';
+
+interface Props {
+  blocks?: ContentBlock[] | null;
+}
+
+const { blocks = [] } = Astro.props;
+const resolvedBlocks = await resolveBlocksMedia(blocks);
+---
+
+{
+  resolvedBlocks.map((block) => {
+    const Component = blockComponents[block.discriminant];
+    if (!Component) return null;
+    return <Component {...block.value} />;
+  })
+}

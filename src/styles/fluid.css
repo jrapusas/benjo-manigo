@@ -1,0 +1,80 @@
+/**
+ * Fluid type & spacing - linear scale from 320px to 1440px viewport.
+ * Min/max pairs are px at 16px root; output is rem-based for user font scaling.
+ */
+:root {
+  --fluid-vp-min: 320;
+  --fluid-vp-max: 1440;
+
+  /* Site rhythm */
+  --site-margin: clamp(1rem, 0.714rem + 1.429vw, 2rem); /* 16–32px */
+  --site-gutter: clamp(1rem, 0.929rem + 0.357vw, 1.25rem); /* 16–20px */
+  --site-width: calc(100% - var(--site-margin) * 2);
+
+  /* Section vertical padding */
+  --space-section: clamp(4rem, 3.429rem + 2.857vw, 5rem); /* 64–80px */
+  --space-section-lg: clamp(5rem, 3.571rem + 5.714vw, 7rem); /* 80–112px */
+  --space-hero-y: clamp(3rem, 1.714rem + 5.714vw, 6rem); /* 48–96px */
+  --space-inset: clamp(1.5rem, 1.071rem + 1.786vw, 2.5rem); /* 24–40px */
+  --space-block-header: var(--space-7); /* 24–36px */
+
+  /* Layout gaps */
+  --space-layout-gap: clamp(2rem, 1.286rem + 3.214vw, 5rem); /* 32–80px */
+  --space-layout-gap-sm: clamp(1.5rem, 1.214rem + 1.071vw, 2.5rem); /* 24–40px */
+
+  /* Stepped spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: clamp(1.125rem, 1.054rem + 0.357vw, 1.375rem); /* 18–22px */
+  --space-6: clamp(1.25rem, 1.107rem + 0.714vw, 1.75rem); /* 20–28px */
+  --space-7: clamp(1.5rem, 1.286rem + 1.071vw, 2.25rem); /* 24–36px */
+  --space-8: clamp(2rem, 1.571rem + 1.786vw, 3rem); /* 32–48px */
+
+  /* Typography - size */
+  --text-display: clamp(2.5rem, 1.786rem + 3.571vw, 4rem); /* 40–64px */
+  --text-hero: clamp(3rem, 1.429rem + 6.25vw, 5.5rem); /* 48–88px */
+  --leading-hero: 1.05;
+  --text-h1: clamp(2rem, 1.429rem + 2.857vw, 3rem); /* 32–48px */
+  --text-h2: clamp(1.875rem, 1.768rem + 0.536vw, 2.25rem); /* 30–36px */
+  --text-h3: clamp(1.5rem, 1.357rem + 0.714vw, 1.875rem); /* 24–30px */
+  --text-h4: clamp(1.25rem, 1.179rem + 0.357vw, 1.5rem); /* 20–24px */
+  --text-stat: clamp(2.25rem, 1.714rem + 2.143vw, 3rem); /* 36–48px */
+  --text-quote: clamp(1rem, 0.929rem + 0.357vw, 1.125rem); /* 16–18px */
+  --text-body-lg: clamp(1rem, 0.929rem + 0.357vw, 1.125rem); /* 16–18px */
+  --text-body: 1rem;
+  --text-body-sm: 0.875rem;
+  --text-caption: 0.75rem;
+  --text-eyebrow: 0.875rem;
+
+  /* In-section layout padding (e.g. image+text bleed rows) */
+  --space-block-y: clamp(4rem, 3rem + 4vw, 6rem); /* 64–96px */
+
+  /* Typography - line height */
+  --leading-display: 1.05;
+  --leading-h1: 1.1;
+  --leading-h2: 1.2;
+  --leading-h3: 1.3;
+  --leading-h4: 1.35;
+  --leading-body-lg: 1.7;
+  --leading-body: 1.625;
+
+  /* Prose rhythm */
+  --space-prose: 1rem;
+  --space-prose-heading: clamp(2rem, 1.786rem + 0.893vw, 2.5rem);
+  --space-prose-subheading: clamp(1.5rem, 1.357rem + 0.714vw, 2rem);
+}
+
+@theme {
+  --spacing-section: var(--space-section);
+  --spacing-section-lg: var(--space-section-lg);
+  --spacing-site-margin: var(--site-margin);
+  --spacing-site-gutter: var(--site-gutter);
+  --font-size-fluid-display: var(--text-display);
+  --font-size-fluid-h1: var(--text-h1);
+  --font-size-fluid-h2: var(--text-h2);
+  --font-size-fluid-h3: var(--text-h3);
+  --font-size-fluid-h4: var(--text-h4);
+  --font-size-fluid-body-lg: var(--text-body-lg);
+}

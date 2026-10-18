@@ -1,0 +1,157 @@
+---
+import MediaImage from './MediaImage.astro';
+
+interface Props {
+  src?: string | null;
+  name?: string;
+  class?: string;
+}
+
+const LOGO_NAMES = ['logo-client-1', 'logo-client-2', 'logo-client-3', 'logo-client-4'] as const;
+type LogoName = (typeof LOGO_NAMES)[number];
+
+function logoNameFromSrc(src?: string | null): LogoName | null {
+  if (!src) return null;
+  for (const name of LOGO_NAMES) {
+    if (src.includes(name)) return name;
+  }
+  return null;
+}
+
+const { src, name = '', class: className = 'h-10 w-auto max-w-full' } = Astro.props;
+const logo = logoNameFromSrc(src);
+
+const svgProps = {
+  xmlns: 'http://www.w3.org/2000/svg',
+  class: className,
+  role: 'img',
+  'aria-label': name,
+};
+---
+
+{
+  logo === 'logo-client-1' ? (
+    <svg {...svgProps} viewBox="3 7 122 34" fill="none">
+      <circle cx="20" cy="24" r="14" stroke="currentColor" stroke-width="1.75" />
+      <path
+        d="M20 14v6M14 20h12M16 28c2 2 4 2 4 2s2 0 4-2"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <text
+        x="44"
+        y="22"
+        fill="currentColor"
+        font-family="DM Sans, ui-sans-serif, system-ui, sans-serif"
+        font-size="14"
+        font-weight="700"
+        letter-spacing="0.06em">MITCHELL</text
+      >
+      <text
+        x="44"
+        y="36"
+        fill="currentColor"
+        class="logo-mark-subtitle"
+        font-family="DM Sans, ui-sans-serif, system-ui, sans-serif"
+        font-size="9.5"
+        font-weight="500"
+        letter-spacing="0.14em">LEGAL GROUP</text
+      >
+    </svg>
+  ) : logo === 'logo-client-2' ? (
+    <svg {...svgProps} viewBox="6 7 142 34" fill="none">
+      <path
+        d="M8 32c8-14 16-14 24 0M20 32V18M14 24h12"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <text
+        x="44"
+        y="22"
+        fill="currentColor"
+        font-family="DM Sans, ui-sans-serif, system-ui, sans-serif"
+        font-size="13.5"
+        font-weight="700"
+        letter-spacing="0.05em">NORTHBRIDGE</text
+      >
+      <text
+        x="44"
+        y="36"
+        fill="currentColor"
+        class="logo-mark-subtitle"
+        font-family="DM Sans, ui-sans-serif, system-ui, sans-serif"
+        font-size="9.5"
+        font-weight="500"
+        letter-spacing="0.16em">ADVISORY</text
+      >
+    </svg>
+  ) : logo === 'logo-client-3' ? (
+    <svg {...svgProps} viewBox="8 7 150 30" fill="none">
+      <path
+        d="M10 34c0-10 6-16 10-16s10 6 10 16"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+      />
+      <path d="M10 34h20" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+      <text
+        x="38"
+        y="27"
+        fill="currentColor"
+        font-family="Georgia, ui-serif, serif"
+        font-size="17"
+        font-weight="600">Vasquez</text
+      >
+      <text
+        x="118"
+        y="27"
+        fill="currentColor"
+        class="logo-mark-subtitle"
+        font-family="Georgia, ui-serif, serif"
+        font-size="14"
+        font-weight="400">&amp; Co.</text
+      >
+    </svg>
+  ) : logo === 'logo-client-4' ? (
+    <svg {...svgProps} viewBox="6 7 152 34" fill="none">
+      <path
+        d="M8 30c4-8 8-12 12-12s8 4 12 12M14 30h12M12 24c2-2 4-2 6 0"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <text
+        x="44"
+        y="22"
+        fill="currentColor"
+        font-family="DM Sans, ui-sans-serif, system-ui, sans-serif"
+        font-size="13"
+        font-weight="700"
+        letter-spacing="0.08em">HARBOUR</text
+      >
+      <text
+        x="44"
+        y="36"
+        fill="currentColor"
+        class="logo-mark-subtitle"
+        font-family="DM Sans, ui-sans-serif, system-ui, sans-serif"
+        font-size="9.5"
+        font-weight="500"
+        letter-spacing="0.12em">FINANCE PARTNERS</text
+      >
+    </svg>
+  ) : src ? (
+    <MediaImage
+      src={src}
+      alt={name}
+      class={`${className} object-contain`}
+      widths={[160, 320]}
+      sizes="10rem"
+    />
+  ) : null
+}

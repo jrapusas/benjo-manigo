@@ -1,0 +1,148 @@
+---
+import Container from '../ui/Container.astro';
+import Section from '../ui/Section.astro';
+import BlockHeader from '../ui/BlockHeader.astro';
+import Icon from '../ui/Icon.astro';
+import type { BlockValue } from '../../lib/types';
+import { hasText } from '../../lib/blockFields';
+
+interface Props extends BlockValue<'timeline'> {}
+
+const { color, appearance, heading, description, events = [] } = Astro.props;
+const visibleEvents = events.filter(
+  (event) => hasText(event.date) && hasText(event.title),
+);
+const templateClass = 'section-timeline';
+---
+
+<Section color={color} appearance={appearance ?? 'soft'} class={templateClass}>
+  <Container narrow>
+    <BlockHeader heading={heading} description={description} />
+    <div class="timeline-shell">
+      <div class="timeline-line-track" aria-hidden="true">
+        <span class="timeline-line"></span>
+      </div>
+      <ol class="timeline">
+        {
+          visibleEvents.map((event) => (
+            <li class="timeline-item">
+              <span class="timeline-marker" aria-hidden="true"></span>
+              <article class="card card-hover card-fill block-card timeline-card">
+                {event.icon && (
+                  <div class="icon-box shrink-0 text-interactive mb-stack-3">
+                    <Icon src={event.icon} class="h-10 w-10" />
+                  </div>
+                )}
+                <p class="block-meta text-interactive">{event.date}</p>
+                <h3 class="block-item-title-lg mt-stack-2">{event.title}</h3>
+                {event.description && (
+                  <p class="mt-stack-3 block-body-sm text-muted">{event.description}</p>
+                )}
+              </article>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </Container>
+</Section>
+
+<style>
+  .timeline-shell {
+    position: relative;
+    margin-inline: auto;
+    max-width: 42rem;
+  }
+
+  .timeline-line-track {
+    position: absolute;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    left: 0.6875rem;
+    z-index: 0;
+    width: 2px;
+  }
+
+  .timeline-line {
+    display: block;
+    height: 100%;
+    width: 100%;
+    border-radius: 9999px;
+    background: linear-gradient(
+      to bottom,
+      var(--color-accent-line-subtle),
+      var(--color-accent-line),
+      var(--color-accent-line-subtle)
+    );
+    transform-origin: top center;
+  }
+
+  .timeline {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    padding: 0;
+    list-style: none;
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-left: 2.25rem;
+  }
+
+  .timeline-marker {
+    position: absolute;
+    top: 1.5rem;
+    left: 0;
+    z-index: 2;
+    height: 0.875rem;
+    width: 0.875rem;
+    transform: translateX(calc(0.6875rem - 50%));
+    border-radius: 9999px;
+    border: 2px solid var(--color-accent-line);
+    background-color: var(--color-background);
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--color-accent-line) 18%, var(--color-background)),
+      0 0 0 1px color-mix(in srgb, var(--color-accent-line) 35%, transparent);
+  }
+
+  .timeline-card {
+    position: relative;
+    text-align: left;
+  }
+
+  @media (width >= 40rem) {
+    .timeline-shell {
+      max-width: 52rem;
+    }
+
+    .timeline-line-track {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .timeline-item {
+      padding-left: 0;
+      min-height: 5rem;
+    }
+
+    .timeline-marker {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .timeline-item:nth-child(odd) .timeline-card {
+      width: calc(50% - 2rem);
+      margin-right: auto;
+      margin-left: 0;
+    }
+
+    .timeline-item:nth-child(even) .timeline-card {
+      width: calc(50% - 2rem);
+      margin-left: auto;
+      margin-right: 0;
+    }
+  }
+</style>

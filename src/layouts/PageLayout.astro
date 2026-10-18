@@ -1,0 +1,40 @@
+---
+// Page layout - SEO shell + content blocks. Used by index.astro and [slug].astro.
+
+import BaseLayout from './BaseLayout.astro';
+import Blocks from '../components/blocks/Blocks.astro';
+import type { ContentBlock } from '../lib/types';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  blocks?: ContentBlock[] | null;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogTitle,
+  ogDescription,
+  ogImage,
+  blocks,
+} = Astro.props;
+---
+
+<!-- Layout composition: BaseLayout provides chrome; Blocks renders the page body -->
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  ogTitle={ogTitle}
+  ogDescription={ogDescription}
+  ogImage={ogImage}
+>
+  <Blocks blocks={blocks} />
+  <slot />
+</BaseLayout>

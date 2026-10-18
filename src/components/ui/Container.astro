@@ -1,0 +1,15 @@
+---
+// Width-constraining wrapper - most sections use this for consistent horizontal padding.
+
+interface Props {
+  class?: string;
+  narrow?: boolean;
+}
+
+const { class: className = '', narrow = false } = Astro.props;
+---
+
+<!-- Ternary in class:list - picks container class based on narrow prop -->
+<div class:list={[narrow ? 'container-narrow px-[var(--site-margin)]' : 'container-page', className]}>
+  <slot />
+</div>

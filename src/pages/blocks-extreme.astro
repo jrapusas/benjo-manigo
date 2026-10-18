@@ -1,0 +1,19 @@
+---
+import BlocksShowcasePage from '../components/pages/BlocksShowcasePage.astro';
+import { guardDevOnlyPage } from '../lib/devOnly';
+import { extremeShowcaseSections } from '../lib/blockShowcaseExtreme';
+
+export const prerender = false;
+
+const devGuard = guardDevOnlyPage(Astro);
+if (devGuard) return devGuard;
+---
+
+<BlocksShowcasePage
+  path="/blocks-extreme"
+  pageTitle="Block showcase (extreme)"
+  metaDescription="Stress-test every content block with extreme copy, unbroken strings, and maxed-out field counts."
+  heading="Block showcase (extreme)"
+  intro="Every content block with extreme copy - long headings, unbroken strings, numerals, and maxed-out field counts - to stress-test typography, contrast, wrapping, motion, and layout."
+  sections={extremeShowcaseSections}
+/>

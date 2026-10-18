@@ -1,0 +1,48 @@
+---
+import Container from '../ui/Container.astro';
+import Section from '../ui/Section.astro';
+import BlockHeader from '../ui/BlockHeader.astro';
+import Headshot from '../ui/Headshot.astro';
+import type { BlockValue } from '../../lib/types';
+import { hasText } from '../../lib/blockFields';
+
+interface Props extends BlockValue<'team'> {}
+
+const { color, appearance, heading, description, members = [] } = Astro.props;
+const visibleMembers = members.filter((member) => hasText(member.name));
+const templateClass = 'section-team';
+---
+
+<Section color={color} appearance={appearance ?? 'default'} class={templateClass}>
+  <Container>
+    <BlockHeader heading={heading} description={description} />
+    <div class="item-grid item-grid-cols-3">
+      {
+        visibleMembers.map((member) => (
+          <article class="card card-hover card-fill block-card team-card text-center">
+            {member.image && (
+              <Headshot
+                src={member.image}
+                alt={member.name}
+                class="team-photo mx-auto h-24 w-24 ring-2 ring-subtle sm:h-28 sm:w-28"
+              />
+            )}
+            <h3 class="block-item-title-lg mt-stack-5">{member.name}</h3>
+            {hasText(member.role) && (
+              <p class="mt-stack-1 block-meta text-interactive">{member.role}</p>
+            )}
+            {member.bio && (
+              <p class="mt-stack-4 flex-1 block-body-sm text-muted text-balance">{member.bio}</p>
+            )}
+          </article>
+        ))
+      }
+    </div>
+  </Container>
+</Section>
+
+<style>
+  .team-photo :global(img) {
+    object-position: center 18%;
+  }
+</style>

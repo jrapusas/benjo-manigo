@@ -1,0 +1,119 @@
+---
+import Container from '../ui/Container.astro';
+import Section from '../ui/Section.astro';
+import BlockHeader from '../ui/BlockHeader.astro';
+import Icon from '../ui/Icon.astro';
+import type { BlockValue } from '../../lib/types';
+import { hasText } from '../../lib/blockFields';
+
+interface Props extends BlockValue<'stats'> {}
+
+const { color, appearance, heading, stats = [] } = Astro.props;
+const visibleStats = stats.filter((stat) => hasText(stat.value) && hasText(stat.label));
+const templateClass = 'section-stats';
+
+/** Match column count to items so text stats aren't squeezed into empty grid slots. */
+function statsStripClass(count: number) {
+  if (count === 4) return 'stats-strip-cols-4';
+  return 'stats-strip-cols-3';
+}
+const statStripClass = statsStripClass(visibleStats.length);
+---
+
+<Section color={color} appearance={appearance ?? 'accent'} class={templateClass}>
+  <Container>
+    {hasText(heading) && (
+      <BlockHeader heading={heading} class="[&_.block-heading]:text-section [&_.block-description]:text-section-muted" />
+    )}
+    <div class:list={['stats-strip', statStripClass]}>
+      {
+        visibleStats.map((stat, index) => (
+          <div class:list={['stats-item', index > 0 && 'stats-item-divided']}>
+            <p class="block-stat text-section">{stat.value}</p>
+            <p class="mt-stack-2 block-body font-semibold text-section-muted">{stat.label}</p>
+            {stat.description && (
+              <p class="mt-stack-2 text-balance block-body-sm text-section-subtle">{stat.description}</p>
+            )}
+          </div>
+        ))
+      }
+    </div>
+  </Container>
+</Section>
+
+<style>
+  .stats-strip {
+    display: grid;
+    gap: 0;
+    width: 100%;
+  }
+
+  .stats-strip-cols-3 {
+    @media (width >= 40rem) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (width >= 64rem) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .stats-strip-cols-4 {
+    @media (width >= 40rem) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (width >= 64rem) {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .stats-item {
+    min-width: 0;
+    padding: 1.5rem 1rem;
+    text-align: center;
+  }
+
+  .stats-item .block-stat {
+    text-wrap: balance;
+  }
+
+  @media (width >= 40rem) {
+    .stats-item {
+      padding: 1.75rem 1.5rem;
+    }
+  }
+
+  @media (width >= 64rem) {
+    .stats-item {
+      padding: 2rem 1.75rem;
+    }
+
+    .stats-item-divided {
+      border-left: 1px solid color-mix(in srgb, var(--color-text) 12%, var(--color-background));
+    }
+  }
+
+  @media (width < 64rem) {
+    .stats-item + .stats-item {
+      border-top: 1px solid color-mix(in srgb, var(--color-text) 12%, var(--color-background));
+    }
+
+    @media (width >= 40rem) {
+      .stats-strip-cols-3 .stats-item:nth-child(odd),
+      .stats-strip-cols-4 .stats-item:nth-child(odd) {
+        border-top: none;
+      }
+
+      .stats-strip-cols-3 .stats-item:nth-child(n + 3),
+      .stats-strip-cols-4 .stats-item:nth-child(n + 3) {
+        border-top: 1px solid color-mix(in srgb, var(--color-text) 12%, var(--color-background));
+      }
+
+      .stats-strip-cols-3 .stats-item:nth-child(even),
+      .stats-strip-cols-4 .stats-item:nth-child(even) {
+        border-left: 1px solid color-mix(in srgb, var(--color-text) 12%, var(--color-background));
+      }
+    }
+  }
+</style>

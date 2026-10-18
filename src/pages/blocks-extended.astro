@@ -1,0 +1,19 @@
+---
+import BlocksShowcasePage from '../components/pages/BlocksShowcasePage.astro';
+import { guardDevOnlyPage } from '../lib/devOnly';
+import { extendedShowcaseSections } from '../lib/blockShowcaseExtended';
+
+export const prerender = false;
+
+const devGuard = guardDevOnlyPage(Astro);
+if (devGuard) return devGuard;
+---
+
+<BlocksShowcasePage
+  path="/blocks-extended"
+  pageTitle="Block showcase (extended)"
+  metaDescription="Preview every content block, layout variant, and section appearance available in the Keystatic page builder."
+  heading="Block showcase (extended)"
+  intro="Every content block and layout variant across all solid and gradient section appearances. Use this page to preview typography, contrast, and layout under every color treatment."
+  sections={extendedShowcaseSections}
+/>

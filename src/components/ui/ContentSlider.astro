@@ -1,0 +1,48 @@
+---
+interface Props {
+  cols?: 3 | 4;
+  label?: string;
+  class?: string;
+}
+
+const { cols = 3, label = 'Carousel', class: className = '' } = Astro.props;
+const trackClass = cols === 4 ? 'content-slider-cols-4' : 'content-slider-cols-3';
+---
+
+<div class:list={['content-slider', className]} data-content-slider>
+  <p class="sr-only" data-content-slider-status aria-live="polite" aria-atomic="true"></p>
+  <div
+    class:list={['content-slider-track', trackClass]}
+    data-content-slider-track
+    role="region"
+    aria-roledescription="carousel"
+    aria-label={label}
+    tabindex="0"
+  >
+    <slot />
+  </div>
+  <div class="content-slider-nav">
+    <button
+      type="button"
+      class="content-slider-btn"
+      data-content-slider-prev
+      aria-label="Previous slide"
+    >
+      <span aria-hidden="true">←</span>
+    </button>
+    <button
+      type="button"
+      class="content-slider-btn"
+      data-content-slider-next
+      aria-label="Next slide"
+    >
+      <span aria-hidden="true">→</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  import { initContentSliders } from '../../scripts/content-slider.ts';
+
+  initContentSliders();
+</script>

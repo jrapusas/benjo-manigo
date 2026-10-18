@@ -1,0 +1,84 @@
+---
+import Container from '../ui/Container.astro';
+import Section from '../ui/Section.astro';
+import BlockHeader from '../ui/BlockHeader.astro';
+import ContentSlider from '../ui/ContentSlider.astro';
+import Icon from '../ui/Icon.astro';
+import type { BlockValue } from '../../lib/types';
+import { hasText, isSliderVariant } from '../../lib/blockFields';
+
+interface Props extends BlockValue<'processSteps'> {}
+
+const { color, appearance, heading, description, variant, steps = [] } = Astro.props;
+const visibleSteps = steps.filter(
+  (step) => hasText(step.title) || hasText(step.description),
+);
+const isSlider = isSliderVariant(variant);
+const templateClass = isSlider ? 'section-processsteps-slider' : 'section-processsteps';
+
+/** Avoid a lone card on the last row (e.g. 5 steps in a 4-col grid). */
+function processStepGridClass(count: number) {
+  if (count === 4) return 'item-grid-cols-4';
+  return 'item-grid-cols-3';
+}
+const stepGridClass = processStepGridClass(visibleSteps.length);
+---
+
+<Section color={color} appearance={appearance ?? 'default'} class={templateClass}>
+  <Container>
+    <BlockHeader heading={heading} description={description} />
+    {
+      isSlider ? (
+        <ContentSlider cols={4} label={heading || 'Process steps'}>
+          {
+            visibleSteps.map((step, index) => (
+              <div class="card card-hover card-fill block-card">
+                <div class="flex items-start gap-block">
+                  {step.icon && (
+                    <div class="icon-box shrink-0 text-interactive">
+                      <Icon src={step.icon} class="h-10 w-10" />
+                    </div>
+                  )}
+                  <span
+                    class="block-step shrink-0"
+                    aria-hidden="true">{index + 1}</span>
+                  <div class="min-w-0">
+                    {hasText(step.title) && <h3 class="block-item-title mt-stack-4">{step.title}</h3>}
+                    {hasText(step.description) && (
+                      <p class="mt-stack-2 flex-1 block-body-sm text-muted">{step.description}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+        </ContentSlider>
+      ) : (
+        <ol class:list={['item-grid', stepGridClass, 'list-none']}>
+          {
+            visibleSteps.map((step, index) => (
+              <li class="card card-hover card-fill block-card">
+                <div class="flex items-start gap-block">
+                  {step.icon && (
+                    <div class="icon-box shrink-0 text-interactive">
+                      <Icon src={step.icon} class="h-10 w-10" />
+                    </div>
+                  )}
+                  <span
+                    class="block-step shrink-0"
+                    aria-hidden="true">{index + 1}</span>
+                  <div class="min-w-0">
+                    {hasText(step.title) && <h3 class="block-item-title mt-stack-4">{step.title}</h3>}
+                    {hasText(step.description) && (
+                      <p class="mt-stack-2 flex-1 block-body-sm text-muted">{step.description}</p>
+                    )}
+                  </div>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      )
+    }
+  </Container>
+</Section>

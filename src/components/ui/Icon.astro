@@ -1,0 +1,26 @@
+---
+import { readPublicSvg, resolveIconSrc } from '../../lib/iconSvg';
+
+interface Props {
+  src?: string | null;
+  class?: string;
+}
+
+const { src, class: className = 'h-8 w-8' } = Astro.props;
+const resolvedSrc = resolveIconSrc(src);
+const inlineSvg = readPublicSvg(resolvedSrc, className);
+---
+
+{
+  inlineSvg ? (
+    <span class="inline-flex shrink-0" set:html={inlineSvg} />
+  ) : resolvedSrc ? (
+    <img
+      src={resolvedSrc}
+      alt=""
+      role="presentation"
+      class:list={[className, 'shrink-0 object-contain']}
+      loading="lazy"
+    />
+  ) : null
+}

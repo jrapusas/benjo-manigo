@@ -1,0 +1,37 @@
+title: Commission
+seoTitle: Commission · Jonathan “Benjo” Manigo — Oil Paintings
+metaDescription: >-
+  Request a custom oil painting commission from Jonathan “Benjo” Manigo in the
+  Philippines.
+blocks:
+  - discriminant: hero
+    value:
+      title: Commission a custom oil painting
+      eyebrow: Commission inquiry
+      description: >-
+        Share your idea, size, and timeline. Jon reviews every inquiry and
+        connects you with Benjo for pricing and agreement.
+      image: /images/gallery/floral/floral-02-cream-roses-framed.webp
+      variant: splitImageContained
+      appearance: dark
+      color: auto
+  - discriminant: processSteps
+    value:
+      color: auto
+      appearance: default
+      heading: How it works
+      description: Clear steps from inquiry to agreement with the artist.
+      variant: grid
+      steps:
+        - title: Submit the form
+          description: Tell us about the painting you have in mind.
+        - title: Jon reviews
+          description: Jon qualifies the inquiry and follows up by email.
+        - title: Benjo quotes
+          description: Benjo shares price and timeline directly with you.
+        - title: Agreement
+          description: Final terms and artwork agreement are with Benjo.
+  - discriminant: richText
+    value:
+      color: auto
+      appearance: default

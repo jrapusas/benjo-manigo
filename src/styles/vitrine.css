@@ -1,0 +1,587 @@
+/* Gallery vitrine — exhibition wall, matted art, placard type */
+
+.site-header {
+  background-color: color-mix(in srgb, #2a2826 96%, transparent);
+  border-bottom-color: color-mix(in srgb, #f7f5f2 14%, #2a2826);
+  backdrop-filter: none;
+}
+
+.site-header .site-name,
+.site-header .link-nav {
+  color: color-mix(in srgb, #f7f5f2 88%, #2a2826);
+}
+
+/* Hero title — global (h1 lives in ArtistNameHeading, not Hero scoped DOM) */
+.section-hero .hero-title {
+  font-family: var(--font-display);
+  font-size: var(--text-hero);
+  line-height: var(--leading-hero);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+/* Stacked artist name — flex stack so lines keep clear vertical rhythm */
+.section-hero .hero-title .artist-name-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: inherit;
+  gap: 0em;
+}
+
+.section-hero .hero-title .artist-name-stack__line {
+  display: block;
+  line-height: 1.06;
+}
+
+/* Typographic quotes from Source Serif 4 via CSS quote glyphs (not styled separately). */
+.section-hero .hero-title .artist-name-stack__line--nickname {
+  quotes: '\201C' '\201D';
+}
+
+.section-hero .hero-title .artist-name-stack__quote-open::before {
+  content: open-quote;
+}
+
+.section-hero .hero-title .artist-name-stack__quote-close::before {
+  content: close-quote;
+}
+
+.site-header .link-nav:hover,
+.site-header .link-nav[aria-current='page'] {
+  color: #f7f5f2;
+}
+
+.site-header .mobile-menu-trigger {
+  border-color: color-mix(in srgb, #f7f5f2 22%, #2a2826);
+  background-color: color-mix(in srgb, #f7f5f2 8%, #2a2826);
+  color: #f7f5f2;
+}
+
+@utility hero-placard {
+  margin-top: -0.25rem;
+  font-family: var(--font-sans);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-subheading) 92%, var(--color-text));
+}
+
+@utility art-mat {
+  padding: clamp(0.75rem, 2vw, 1.25rem);
+  background-color: #f7f5f2;
+  border: 1px solid color-mix(in srgb, #2a2826 10%, #f7f5f2);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, #2a2826 6%, transparent),
+    0 12px 32px color-mix(in srgb, #2a2826 18%, transparent);
+}
+
+@utility block-placard {
+  font-family: var(--font-sans);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-subheading, var(--color-muted-fg));
+}
+
+.section-hero[data-appearance='dark'] .hero-grid-lines {
+  display: none;
+}
+
+.section-hero[data-appearance='dark'] .hero-layout-split {
+  @media (width >= 64rem) {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+  }
+}
+
+/* Salon hang — home featured genres; paintings keep their own proportions */
+.section-gallery-vitrine .block-header {
+  margin-bottom: clamp(3rem, 2rem + 4vw, 5.5rem);
+}
+
+.salon-hang {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(3rem, 2rem + 3vw, 4.5rem);
+  align-items: start;
+
+  @media (width >= 48rem) {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(2rem, 1rem + 3vw, 4rem);
+    row-gap: clamp(3.5rem, 2rem + 4vw, 6rem);
+  }
+}
+
+.salon-item {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+
+  @media (width >= 48rem) {
+    &:nth-child(4n + 1) { grid-column: 1 / span 7; }
+    &:nth-child(4n + 2) { grid-column: 8 / span 5; margin-top: clamp(3rem, 8vw, 7rem); }
+    &:nth-child(4n + 3) { grid-column: 2 / span 5; }
+    &:nth-child(4n + 4) { grid-column: 7 / span 6; margin-top: clamp(-2rem, -3vw, -1rem); }
+    &:nth-child(4n + 2),
+    &:nth-child(4n + 4) { justify-self: end; }
+  }
+}
+
+.salon-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.salon-mat {
+  display: inline-flex;
+  max-width: 100%;
+  padding: clamp(0.6rem, 1.4vw, 1rem);
+  background-color: #fbfaf8;
+  box-shadow:
+    0 1px 0 color-mix(in srgb, #2a2826 8%, transparent),
+    0 18px 40px -12px color-mix(in srgb, #2a2826 28%, transparent);
+  transition: box-shadow 420ms var(--ease-out-expo), transform 420ms var(--ease-out-expo);
+}
+
+.salon-image {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: min(72vh, 44rem);
+}
+
+.salon-link:hover .salon-mat {
+  transform: translateY(-3px);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, #2a2826 8%, transparent),
+    0 28px 56px -14px color-mix(in srgb, #2a2826 34%, transparent);
+}
+
+.salon-placard {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid color-mix(in srgb, #2a2826 14%, transparent);
+}
+
+.salon-placard-title {
+  font-family: var(--font-display);
+  font-size: var(--text-h4);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--color-heading, #2a2826);
+}
+
+.salon-placard-link {
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-link);
+  white-space: nowrap;
+  transition: letter-spacing 300ms var(--ease-out-expo);
+}
+
+.salon-link:hover .salon-placard-link {
+  letter-spacing: 0.18em;
+}
+
+.salon-link:focus-visible {
+  outline: 2px solid #b8a066;
+  outline-offset: 6px;
+}
+
+.section-work-index .card,
+.section-category-gallery .card,
+.section-painting-masonry .card,
+.section-painting-masonry .painting-masonry-item {
+  border-radius: 0;
+}
+
+.section-work-index .card,
+.section-category-gallery .card {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.section-work-index .work-genre-grid {
+  gap: clamp(1.75rem, 1.4rem + 1.25vw, 2.5rem);
+}
+
+.section-work-index .work-genre-card-caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-4) var(--space-2) 0;
+  text-align: center;
+}
+
+.section-work-index .work-genre-card-caption .block-item-title {
+  margin: 0;
+}
+
+/* Transparent genre cards on the wall — reset card-surface tokens to wall ink */
+.section-work-index[data-appearance='dark'] .work-genre-card {
+  --color-text: var(--color-gradient-text, #ffffff);
+  --color-heading: var(--color-gradient-heading, #fcfcfc);
+  --color-subheading: var(--color-gradient-subheading, #fafafa);
+  color: var(--color-text);
+}
+
+.section-work-index[data-appearance='dark'] .work-genre-card .block-item-title {
+  color: var(--color-heading);
+}
+
+.section-work-index[data-appearance='dark'] .work-genre-card .text-muted {
+  color: var(--color-subheading-section-subtle, var(--color-subheading));
+}
+
+.section-work-index .work-genre-card:focus-visible {
+  outline: 2px solid #b8a066;
+  outline-offset: 4px;
+}
+
+.section-work-index .work-genre-cta,
+.section-painting-masonry .work-genre-cta {
+  margin-top: var(--space-8);
+  text-align: center;
+}
+
+.section-work-index .painting-cell,
+.section-category-gallery .painting-cell,
+.section-painting-masonry .painting-masonry-item .painting-cell {
+  border-radius: 0;
+  padding: clamp(0.5rem, 1.2vw, 0.85rem);
+  background-color: #f7f5f2;
+  box-shadow: 0 8px 24px color-mix(in srgb, #2a2826 12%, transparent);
+}
+
+.appearance-section[data-appearance='dark'] .commission-prompt {
+  border-color: color-mix(in srgb, #f7f5f2 16%, #2a2826);
+  background-color: color-mix(in srgb, #f7f5f2 6%, #2a2826);
+}
+
+.appearance-section[data-appearance='default'] .commission-prompt,
+.appearance-section[data-appearance='soft'] .commission-prompt {
+  background-color: color-mix(in srgb, #2a2826 3%, #f7f5f2);
+}
+
+.section-commission-form {
+  background-color: color-mix(in srgb, #f7f5f2 94%, #ffffff);
+}
+
+.section-commission-form .block-heading {
+  font-family: var(--font-display);
+}
+
+.section-thanks {
+  background-color: #f7f5f2;
+}
+
+.section-breadcrumbs {
+  background-color: #f7f5f2;
+}
+
+.painting-masonry {
+  display: grid;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.painting-masonry-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.painting-masonry-item .painting-cell {
+  cursor: zoom-in;
+}
+
+.painting-masonry-item .painting-cell:focus-visible {
+  outline: 2px solid #b8a066;
+  outline-offset: 3px;
+}
+
+.painting-masonry-item {
+  margin: 0;
+}
+
+@media (width >= 64rem) {
+  .section-gallery-bleed-half .gallery-bleed-half-copy,
+  .section-imagetext .gallery-bleed-half-copy {
+    width: 100%;
+    max-width: none;
+  }
+
+  /* Image on the right — copy on the left quarter, aligned to the image edge. */
+  .section-gallery-bleed-half .gallery-bleed-half-copy--before-image,
+  .section-imagetext .gallery-bleed-half-copy--before-image {
+    align-items: flex-end;
+    text-align: right;
+    padding-inline: var(--site-margin) var(--space-layout-gap);
+  }
+
+  /* Image on the left — copy on the right quarter, aligned to the image edge. */
+  .section-gallery-bleed-half .gallery-bleed-half-copy--after-image,
+  .section-imagetext .gallery-bleed-half-copy--after-image {
+    align-items: flex-start;
+    text-align: left;
+    padding-inline: var(--space-layout-gap) var(--site-margin);
+  }
+
+  .section-gallery-bleed-half .gallery-bleed-half-copy--before-image > .pt-stack-2,
+  .section-imagetext .gallery-bleed-half-copy--before-image > .pt-stack-2 {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+.section-commission-form input:not([type='file']),
+.section-commission-form select,
+.section-commission-form textarea {
+  border-color: color-mix(in srgb, #2a2826 16%, #f7f5f2);
+  background-color: #ffffff;
+}
+
+.section-commission-form input:focus-visible,
+.section-commission-form select:focus-visible,
+.section-commission-form textarea:focus-visible {
+  outline: 2px solid #b8a066;
+  outline-offset: 1px;
+  border-color: color-mix(in srgb, #b8a066 55%, #2a2826);
+}
+
+.site-footer {
+  background-color: #2a2826;
+  color: color-mix(in srgb, #f7f5f2 82%, #2a2826);
+  border-top-color: color-mix(in srgb, #f7f5f2 12%, #2a2826);
+}
+
+.site-footer .block-meta,
+.site-footer .text-muted,
+.site-footer p {
+  color: color-mix(in srgb, #f7f5f2 72%, #2a2826);
+}
+
+.site-footer a {
+  color: color-mix(in srgb, #b8a066 92%, #f7f5f2);
+}
+
+.site-footer a:hover {
+  color: #f7f5f2;
+}
+
+.site-footer .footer-signature {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #f7f5f2;
+}
+
+.site-footer .footer-cta {
+  font-size: var(--text-body);
+}
+
+/* Browser surfaces */
+html {
+  scrollbar-color: color-mix(in srgb, #2a2826 38%, #f7f5f2) #f7f5f2;
+  caret-color: #a08d58;
+}
+
+::selection {
+  background-color: color-mix(in srgb, #b8a066 45%, #f7f5f2);
+  color: #1a1816;
+}
+
+a {
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+
+/* Header wordmark */
+.site-header .site-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+/* Hero — titles size to their column so long words never split */
+.section-hero .hero-copy {
+  container-type: inline-size;
+  width: 100%;
+}
+
+.section-hero .hero-title {
+  font-size: min(var(--text-hero), 17cqi);
+  overflow-wrap: normal;
+}
+
+.section-hero .hero-title:not(:has(.artist-name-stack)) {
+  font-size: min(var(--text-display), 14cqi);
+  line-height: 1.08;
+}
+
+.section-hero .hero-copy .hero-description {
+  color: color-mix(in srgb, var(--color-text) 78%, var(--color-background));
+}
+
+/* Interior pages: breadcrumbs sit on mat, so the wall hero needs its own top air */
+section.section-breadcrumbs + section.section-hero[data-appearance='dark'] {
+  padding-top: var(--space-section);
+}
+
+/* Framed hero painting — mat hugs the painting's real proportions */
+.section-hero .hero-media {
+  display: flex;
+  justify-content: center;
+}
+
+@media (width >= 64rem) {
+  .section-hero .hero-layout.hero-layout-split {
+    align-items: center;
+  }
+
+  .section-hero .hero-layout-split .hero-media {
+    justify-content: flex-end;
+  }
+}
+
+.section-hero .hero-media-frame.art-mat {
+  border-radius: 0;
+  border: none;
+  box-shadow:
+    0 2px 0 color-mix(in srgb, #000 20%, transparent),
+    0 30px 60px -20px color-mix(in srgb, #000 55%, transparent);
+}
+
+/* Image + text — paintings matted, never cropped */
+.section-imagetext .imagetext-media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: auto;
+  overflow: visible;
+}
+
+.section-imagetext .imagetext-media img {
+  position: relative;
+  inset: auto;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: min(80vh, 42rem);
+  object-fit: contain;
+  padding: clamp(0.6rem, 1.4vw, 1rem);
+  background-color: #fbfaf8;
+  box-shadow:
+    0 1px 0 color-mix(in srgb, #2a2826 8%, transparent),
+    0 18px 40px -12px color-mix(in srgb, #2a2826 28%, transparent);
+}
+
+.section-imagetext .prose-content {
+  max-width: 34rem;
+}
+
+/* Rich text — first paragraph reads as a serif lead */
+.section-rich-text .prose-content > p:first-child {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 1.1rem + 0.9vw, 1.75rem);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--color-heading);
+  text-wrap: pretty;
+}
+
+.section-rich-text .prose-content > * + h2 {
+  margin-top: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+}
+
+/* Process steps — a ruled sequence, not cards */
+.section-processsteps ol.item-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  border-top: 1px solid color-mix(in srgb, #2a2826 18%, transparent);
+
+  @media (width >= 40rem) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (width >= 64rem) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.section-processsteps ol.item-grid > li.card {
+  max-width: none;
+  padding: 1.75rem 1.5rem 0.5rem 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+
+  & > div {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .block-step {
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: none;
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1;
+    color: color-mix(in srgb, #b8a066 62%, #2a2826);
+  }
+
+  .block-item-title {
+    margin-top: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-h4);
+  }
+}
+
+/* Motion — paintings settle onto the wall as they enter view */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .salon-item,
+    .painting-masonry-item,
+    .section-imagetext .imagetext-media img {
+      animation: vitrine-hang cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+  }
+}
+
+@keyframes vitrine-hang {
+  from {
+    opacity: 0.001;
+    transform: translateY(1.75rem) scale(0.985);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}

@@ -1,0 +1,63 @@
+---
+import Container from '../ui/Container.astro';
+import Section from '../ui/Section.astro';
+import BlockHeader from '../ui/BlockHeader.astro';
+import DocumentContent from '../react/DocumentContent';
+import type { BlockValue } from '../../lib/types';
+import { hasText } from '../../lib/blockFields';
+
+interface Props extends BlockValue<'accordion'> {}
+
+const { color, appearance, heading, questions = [] } = Astro.props;
+const visibleQuestions = questions.filter((item) => hasText(item.question));
+const templateClass = 'section-accordion';
+---
+
+<Section color={color} appearance={appearance ?? 'default'} class={templateClass}>
+  <Container narrow>
+    <BlockHeader heading={heading} align="left" class="mb-stack-8" />
+    <div class="flex flex-col gap-block-sm">
+      {
+        visibleQuestions.map((item) => (
+          <details
+            class="group card block-card transition-colors open:bg-elevated"
+
+          >
+            <summary class="cursor-pointer list-none marker:content-none">
+              <span class="flex items-center justify-between gap-block">
+                <span class="block-item-title min-w-0 flex-1 text-left">{item.question}</span>
+                <span
+                  class="accordion-toggle-icon flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-elevated text-interactive transition-[transform,background-color,color]"
+                  aria-hidden="true"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M4 6l4 4 4-4" />
+                  </svg>
+                </span>
+              </span>
+            </summary>
+            <div class="mt-stack-4 border-t border-subtle pt-stack-4 prose-content">
+              <DocumentContent document={item.answer} />
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </Container>
+</Section>
+
+<style>
+  details[open] .accordion-toggle-icon {
+    transform: rotate(180deg);
+    background-color: var(--color-button-bg);
+    color: var(--color-button-text, var(--color-button-fg));
+  }
+</style>

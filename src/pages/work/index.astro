@@ -1,0 +1,74 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import Container from '../../components/ui/Container.astro';
+import Section from '../../components/ui/Section.astro';
+import BlockHeader from '../../components/ui/BlockHeader.astro';
+import MediaImage from '../../components/ui/MediaImage.astro';
+import PaintingMasonry from '../../components/blocks/PaintingMasonry.astro';
+import { categorySummaries, listAllPaintings } from '../../lib/gallery/load';
+import { buildSeo } from '../../lib/seo';
+
+const categories = categorySummaries();
+const allPaintings = listAllPaintings();
+
+const seo = buildSeo({
+  title: 'Work',
+  seoTitle: 'Work · Jonathan “Benjo” Manigo — Oil Paintings',
+  metaDescription:
+    'Oil painting gallery by Jonathan “Benjo” Manigo — browse portraits, landscapes, seascapes, floral, still life, animals, Christian themes, and rural life.',
+  path: '/work',
+});
+---
+
+<PageLayout
+  title={seo.title}
+  description={seo.description}
+  canonical={seo.canonical}
+  ogTitle={seo.openGraph.title}
+  ogDescription={seo.openGraph.description}
+  ogImage={seo.openGraph.image}
+>
+  <Section color="auto" appearance="dark" class="section-work-index">
+    <Container>
+      <BlockHeader
+        heading="Gallery"
+        description="Browse by genre, or scroll for the full collection."
+        headingLevel={1}
+      />
+      <div class="work-genre-grid item-grid item-grid-cols-4">
+        {
+          categories.map((category) => (
+            <a
+              href={category.href}
+              class="work-genre-card card card-hover card-fill group flex flex-col overflow-hidden p-0 text-inherit no-underline"
+            >
+              <div class="painting-cell relative aspect-[4/3] overflow-hidden">
+                {category.coverSrc ? (
+                  <MediaImage
+                    src={category.coverSrc}
+                    alt=""
+                    class="media-contain media-hover-zoom relative max-h-full max-w-full"
+                    sizes="(min-width: 1024px) 25vw, 50vw"
+                  />
+                ) : null}
+              </div>
+              <div class="work-genre-card-caption">
+                <h3 class="block-item-title">{category.label}</h3>
+                <p class="mt-stack-2 block-body-sm text-muted">
+                  {category.count} {category.count === 1 ? 'painting' : 'paintings'}
+                </p>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+      <p class="work-genre-cta">
+        <a href="#all-paintings" class="block-link">
+          View all {allPaintings.length} paintings
+          <span aria-hidden="true"> ↓</span>
+        </a>
+      </p>
+    </Container>
+  </Section>
+  <PaintingMasonry color="auto" appearance="default" scope="all" />
+</PageLayout>

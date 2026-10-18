@@ -1,0 +1,133 @@
+---
+import Section from '../ui/Section.astro';
+import { generateColorTheme } from '../../lib/color/generate';
+import { appearanceExtraCssVars } from '../../lib/color/appearanceExtras';
+import { APPEARANCE_NAMES } from '../../lib/color/types';
+import { parseAppearanceIntent } from '../../lib/sectionStyle';
+import {
+  APPEARANCE_LABELS,
+  getResolvedSitePalette,
+  sitePaletteColorId,
+  themeGenerationInput,
+} from '../../lib/sitePalette';
+
+const sitePalette = getResolvedSitePalette();
+
+const appearances = APPEARANCE_NAMES.map((appearance) => {
+  const theme = generateColorTheme(themeGenerationInput(sitePalette, appearance));
+  const { tone, backgroundStyle } = parseAppearanceIntent(appearance);
+  return {
+    appearance,
+    tone,
+    backgroundStyle,
+    meta: APPEARANCE_LABELS[appearance],
+    extraStyle: appearanceExtraCssVars(theme.semantic),
+  };
+});
+---
+
+<section id="link-colors" class="scroll-mt-24">
+  <Section appearance="dark" padding="none">
+    <div class="container-page py-stack-4">
+      <h2 class="block-body-lg font-bold">Section appearances</h2>
+      <p class="mt-stack-1 block-body-sm text-muted">
+        Twelve section appearances - six solid and six gradient - from your brand color.
+        Links, hovers, and buttons derive from each appearance. Hover links and buttons to preview states.
+      </p>
+    </div>
+  </Section>
+
+  <Section appearance="default" padding="default">
+    <div class="container-page">
+      <div class="item-grid item-grid-cols-3">
+        {
+          appearances.map(({ appearance, tone, backgroundStyle, meta, extraStyle }) => (
+            <article
+              data-color={sitePaletteColorId(sitePalette)}
+              data-appearance={tone}
+              {...backgroundStyle === 'gradient' ? { 'data-background-style': 'gradient' } : {}}
+              class="appearance-section overflow-hidden rounded-2xl border border-subtle transition-colors"
+              style={extraStyle}
+            >
+              <div class="flex flex-col gap-block p-stack-5">
+                <div>
+                  <p class="block-eyebrow">{appearance}</p>
+                  <h3 class="mt-stack-2 block-body-sm font-semibold">{meta.label}</h3>
+                  <p class="mt-stack-1 block-caption text-muted">{meta.description}</p>
+                </div>
+
+                <p class="block-body-sm">
+                  Body copy with an{' '}
+                  <a href="#link-colors">inline link</a> and a{' '}
+                  <a href="#link-colors" class="font-semibold">bold link</a>.
+                </p>
+
+                <div class="flex flex-wrap gap-block-sm">
+                  <button type="button" class="btn btn-primary">Primary</button>
+                  <button type="button" class="btn btn-secondary">Secondary</button>
+                </div>
+
+                <div class="mt-auto grid grid-cols-2 gap-block-sm border-t border-current/10 pt-stack-4 block-caption">
+                  <span class="inline-flex items-center gap-stack-2">
+                    <span
+                      class="color-link-showcase-swatch color-link-showcase-swatch--bg-hover"
+                      aria-hidden="true"
+                    />
+                    Bg hover
+                  </span>
+                  <span class="inline-flex items-center gap-stack-2">
+                    <span
+                      class="color-link-showcase-swatch color-link-showcase-swatch--fg-hover"
+                      aria-hidden="true"
+                    />
+                    Text hover
+                  </span>
+                  <span class="inline-flex items-center gap-stack-2">
+                    <span
+                      class="color-link-showcase-swatch color-link-showcase-swatch--link"
+                      aria-hidden="true"
+                    />
+                    Link
+                  </span>
+                  <span class="inline-flex items-center gap-stack-2">
+                    <span
+                      class="color-link-showcase-swatch color-link-showcase-swatch--link-hover"
+                      aria-hidden="true"
+                    />
+                    Link hover
+                  </span>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+</section>
+
+<style>
+  .color-link-showcase-swatch {
+    display: inline-block;
+    height: 0.875rem;
+    width: 0.875rem;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+  }
+
+  .color-link-showcase-swatch--bg-hover {
+    background-color: var(--color-bg-hover);
+  }
+
+  .color-link-showcase-swatch--fg-hover {
+    background-color: var(--color-fg-hover);
+  }
+
+  .color-link-showcase-swatch--link {
+    background-color: var(--color-link);
+  }
+
+  .color-link-showcase-swatch--link-hover {
+    background-color: var(--color-link-hover);
+  }
+</style>

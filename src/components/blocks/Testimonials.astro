@@ -1,0 +1,91 @@
+---
+import Container from '../ui/Container.astro';
+import Section from '../ui/Section.astro';
+import BlockHeader from '../ui/BlockHeader.astro';
+import ContentSlider from '../ui/ContentSlider.astro';
+import Headshot from '../ui/Headshot.astro';
+import type { BlockValue } from '../../lib/types';
+import { hasText, isSliderVariant } from '../../lib/blockFields';
+
+interface Props extends BlockValue<'testimonials'> {}
+
+const { color, appearance, heading, variant, testimonials = [] } = Astro.props;
+const visibleTestimonials = testimonials.filter(
+  (item) => hasText(item.quote) && hasText(item.person),
+);
+const isSlider = isSliderVariant(variant);
+const templateClass = isSlider ? 'section-testimonials-slider' : 'section-testimonials';
+---
+
+<Section color={color} appearance={appearance ?? 'contrast'} class={templateClass}>
+  <Container>
+    <BlockHeader heading={heading} />
+    {
+      isSlider ? (
+        <ContentSlider cols={3} label={heading || 'Testimonials'}>
+          {
+            visibleTestimonials.map((item) => (
+              <figure class="card card-hover card-fill block-card testimonial-card">
+                <blockquote class="testimonial-quote flex-1">
+                  <p class="block-quote text-muted">{item.quote}</p>
+                </blockquote>
+                <figcaption class="testimonial-attribution mt-stack-6 flex items-center gap-block border-t border-subtle pt-stack-5">
+                  {item.image && (
+                    <Headshot
+                      src={item.image}
+                      alt={item.person}
+                      class="h-12 w-12 shrink-0 ring-2 ring-subtle sm:h-14 sm:w-14"
+                    />
+                  )}
+                  <div class="min-w-0">
+                    <p class="block-item-title">{item.person}</p>
+                    {(item.role || item.company) && (
+                      <p class="mt-stack-1 block-body-sm text-muted">
+                        {[item.role, item.company].filter(Boolean).join(', ')}
+                      </p>
+                    )}
+                  </div>
+                </figcaption>
+              </figure>
+            ))
+          }
+        </ContentSlider>
+      ) : (
+        <div class="item-grid item-grid-cols-3">
+          {
+            visibleTestimonials.map((item) => (
+              <figure class="card card-hover card-fill block-card testimonial-card">
+                <blockquote class="testimonial-quote flex-1">
+                  <p class="block-quote text-muted">{item.quote}</p>
+                </blockquote>
+                <figcaption class="testimonial-attribution mt-stack-6 flex items-center gap-block border-t border-subtle pt-stack-5">
+                  {item.image && (
+                    <Headshot
+                      src={item.image}
+                      alt={item.person}
+                      class="h-12 w-12 shrink-0 ring-2 ring-subtle sm:h-14 sm:w-14"
+                    />
+                  )}
+                  <div class="min-w-0">
+                    <p class="block-item-title">{item.person}</p>
+                    {(item.role || item.company) && (
+                      <p class="mt-stack-1 block-body-sm text-muted">
+                        {[item.role, item.company].filter(Boolean).join(', ')}
+                      </p>
+                    )}
+                  </div>
+                </figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      )
+    }
+  </Container>
+</Section>
+
+<style>
+  .testimonial-quote p {
+    text-wrap: pretty;
+  }
+</style>

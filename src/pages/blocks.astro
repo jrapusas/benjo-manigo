@@ -1,0 +1,19 @@
+---
+import BlocksShowcasePage from '../components/pages/BlocksShowcasePage.astro';
+import { guardDevOnlyPage } from '../lib/devOnly';
+import { showcaseSections } from '../lib/blockShowcase';
+
+export const prerender = false;
+
+const devGuard = guardDevOnlyPage(Astro);
+if (devGuard) return devGuard;
+---
+
+<BlocksShowcasePage
+  path="/blocks"
+  pageTitle="Block showcase"
+  metaDescription="Preview every content block and all layout variants available in the Keystatic page builder."
+  heading="Block showcase"
+  intro="Every content block used across the site, grouped by type. Each block is shown in every layout variant with the default section appearance and realistic sample copy."
+  sections={showcaseSections}
+/>

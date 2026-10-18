@@ -1,0 +1,79 @@
+---
+import Section from '../ui/Section.astro';
+import { blockComponents } from '../../lib/blocks';
+import { resolveBlocksMedia } from '../../lib/resolveBlockMedia';
+import { parseAppearanceIntent } from '../../lib/sectionStyle';
+import { formatShowcaseBlockLabel, type ShowcaseSection } from '../../lib/blockShowcaseShared';
+import { getResolvedSitePalette, sitePaletteColorId } from '../../lib/sitePalette';
+
+interface Props {
+  sections: ShowcaseSection[];
+}
+
+const { sections } = Astro.props;
+const sitePalette = getResolvedSitePalette();
+const siteColor = sitePaletteColorId(sitePalette);
+
+const resolvedSections = await Promise.all(
+  sections.map(async (section) => ({
+    ...section,
+    variations: await Promise.all(
+      section.variations.map(async (variation) => ({
+        ...variation,
+        block: (
+          await resolveBlocksMedia([variation.block])
+        )[0],
+      })),
+    ),
+  })),
+);
+---
+
+{
+  resolvedSections.map((section) => (
+    <div id={section.id} class="scroll-mt-24">
+      <Section appearance="dark" padding="none">
+        <div class="container-page flex flex-wrap items-baseline justify-between gap-block-sm py-stack-4">
+          <h2 class="block-body-lg font-bold">{section.name}</h2>
+          <p class="block-body-sm text-muted">
+            {section.variations.length} variation{section.variations.length === 1 ? '' : 's'}
+          </p>
+        </div>
+      </Section>
+
+      {
+        section.variations.map((variation) => {
+          const Component = blockComponents[variation.block.discriminant];
+          if (!Component) return null;
+
+          const { tone: blockTone, backgroundStyle: blockBackgroundStyle } =
+            parseAppearanceIntent(variation.block.value.appearance);
+          const labelLine = formatShowcaseBlockLabel(variation.block);
+
+          return (
+            <div class="block-showcase-variant">
+              {
+                section.variations.length > 1 && (
+                  <div
+                    class="block-showcase-label appearance-section"
+                    data-color={siteColor}
+                    data-appearance={blockTone}
+                    style="background: #ff0000;"
+                    {...blockBackgroundStyle === 'gradient'
+                      ? { 'data-background-style': 'gradient' }
+                      : {}}
+                  >
+                    <div class="container-page py-stack-3">
+                      <p class="block-body-sm font-medium text-heading" style="color: #fff;">{labelLine}</p>
+                    </div>
+                  </div>
+                )
+              }
+              <Component {...variation.block.value} />
+            </div>
+          );
+        })
+      }
+    </div>
+  ))
+}

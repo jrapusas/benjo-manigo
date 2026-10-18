@@ -1,0 +1,45 @@
+title: About
+seoTitle: About · Jonathan “Benjo” Manigo — Oil Paintings
+metaDescription: >-
+  About Jonathan “Benjo” Manigo — Filipino oil painter, exhibitions, and
+  background.
+blocks:
+  - discriminant: hero
+    value:
+      title: Jonathan “Benjo” Manigo
+      eyebrow: About the artist
+      description: >-
+        Filipino oil painter — portraits, landscapes, seascapes, still life,
+        animals, Christian themes, rural life, and more. Based in the Philippines.
+      image: /images/gallery/portraits/portraits-13-artist-self-portrait-veils.webp
+      variant: centered
+      primaryCta:
+        label: View gallery
+        url: /work
+      secondaryCta:
+        label: Back to home
+        url: /
+      appearance: dark
+      color: auto
+  - discriminant: imageText
+    value:
+      title: Artist biography
+      image: /images/gallery/still-life/still-life-02-garlic-paintbrushes.webp
+      imagePosition: right
+      appearance: default
+      color: auto
+      variant: default
+      cta:
+        label: Browse the gallery
+        url: /work
+  - discriminant: cta
+    value:
+      color: auto
+      appearance: dark
+      heading: Commission a custom painting
+      description: >-
+        Share your idea on the commission page. Jon reviews inquiries and
+        connects you with Benjo for pricing and next steps.
+      button:
+        label: Commission inquiry
+        url: /commission

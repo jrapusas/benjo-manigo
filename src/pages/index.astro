@@ -1,0 +1,42 @@
+---
+// ASTRO PAGE - src/pages/index.astro maps to the site root URL (/).
+// Everything between --- is the "component script" (runs at build time, never in the browser).
+
+import { reader } from '../lib/reader';
+import PageLayout from '../layouts/PageLayout.astro';
+import { resolveMediaSrc } from '../lib/media';
+import { buildSeo } from '../lib/seo';
+
+// top-level await is allowed in Astro frontmatter - fetches content during static generation
+const page = await reader.collections.pages.read('home', {
+  resolveLinkedFiles: true, // turns image fields into usable /public paths
+});
+
+if (!page) {
+  throw new Error('Home page not found. Create a page with slug "home" in Keystatic.');
+}
+
+const ogImage = await resolveMediaSrc(page.ogImage);
+
+const seo = buildSeo({
+  title: page.title,
+  path: '/',
+  seoTitle: page.seoTitle,
+  metaDescription: page.metaDescription,
+  canonicalUrl: page.canonicalUrl,
+  ogTitle: page.ogTitle,
+  ogDescription: page.ogDescription,
+  ogImage,
+});
+---
+
+<!-- Below --- is the template. Component names are PascalCase; props use JSX attribute syntax. -->
+<PageLayout
+  title={seo.title}
+  description={seo.description}
+  canonical={seo.canonical}
+  ogTitle={seo.openGraph.title}
+  ogDescription={seo.openGraph.description}
+  ogImage={seo.openGraph.image}
+  blocks={page.blocks}
+/>

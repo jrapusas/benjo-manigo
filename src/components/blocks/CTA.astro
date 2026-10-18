@@ -1,0 +1,417 @@
+---
+import Container from '../ui/Container.astro';
+import Section from '../ui/Section.astro';
+import BlockHeader from '../ui/BlockHeader.astro';
+import Button from '../ui/Button.astro';
+import MediaImage from '../ui/MediaImage.astro';
+import type { BlockValue } from '../../lib/types';
+import { hasButton, hasText } from '../../lib/blockFields';
+import { parseAppearanceIntent } from '../../lib/sectionStyle';
+
+interface Props extends BlockValue<'cta'> {}
+
+const {
+  color,
+  appearance,
+  eyebrow,
+  heading,
+  description,
+  button,
+  note,
+  image,
+  variant = 'default',
+} = Astro.props;
+
+const isNewsletter = variant === 'newsletter';
+const isImageBg = variant === 'imageBackground';
+const isCompact = variant === 'compact';
+
+const variantAppearances = {
+  default: 'accent',
+  compact: 'soft',
+  imageBackground: 'dark',
+  newsletter: 'soft',
+} as const;
+
+const sectionAppearance =
+  appearance ?? variantAppearances[variant as keyof typeof variantAppearances] ?? 'accent';
+const appearanceIntent = parseAppearanceIntent(sectionAppearance);
+const isGradient = appearanceIntent.backgroundStyle === 'gradient';
+const isDarkGradient =
+  isGradient &&
+  (appearanceIntent.tone === 'contrast' ||
+    appearanceIntent.tone === 'dark' ||
+    appearanceIntent.tone === 'accent');
+const isEmphasisBand =
+  appearanceIntent.tone === 'dark' ||
+  appearanceIntent.tone === 'contrast' ||
+  appearanceIntent.tone === 'accent';
+const padding = isImageBg ? 'large' : isCompact || isNewsletter ? 'default' : 'large';
+const templateClass = isNewsletter ? 'section-cta-newsletter' : 'section-cta';
+---
+
+{
+  isNewsletter ? (
+    <Section color={color} appearance={sectionAppearance} class={templateClass}>
+      <Container narrow>
+        <div class="card mx-auto max-w-2xl block-card text-center">
+          <BlockHeader heading={heading} description={description} />
+          {hasButton(button) && (
+            <div class="mt-stack-2">
+              <Button href={button.url}>{button.label}</Button>
+            </div>
+          )}
+          {note && <p class="mt-stack-4 block-body-sm text-muted-subtle">{note}</p>}
+        </div>
+      </Container>
+    </Section>
+  ) : (
+    <Section
+      color={color}
+      appearance={sectionAppearance}
+      padding={padding}
+      class:list={[
+        templateClass,
+        isImageBg && 'relative overflow-hidden',
+        isImageBg && isGradient && 'section-cta-gradient',
+        isImageBg && isDarkGradient && 'section-cta-dark-gradient',
+      ]}
+    >
+  {
+    isImageBg && image && (
+      <div class="cta-bg" aria-hidden="true">
+        <MediaImage
+          src={image}
+          alt=""
+          class="h-full w-full object-cover"
+          sizes="100vw"
+        />
+        <div
+          class="cta-bg-tint"
+          data-appearance={appearanceIntent.tone}
+          {...appearanceIntent.backgroundStyle === 'gradient'
+            ? { 'data-background-style': 'gradient' }
+            : {}}
+        ></div>
+        <div class="cta-bg-shade"></div>
+      </div>
+    )
+  }
+  <div class:list={[isImageBg && 'relative z-[1]']}>
+    <Container>
+      <div
+        class:list={[
+          'mx-auto flex max-w-3xl flex-col gap-block',
+          isCompact ? 'text-left' : 'text-center',
+          isImageBg && 'card block-card cta-copy-card',
+        ]}
+        {...isImageBg && {
+          'data-appearance': appearanceIntent.tone,
+          ...(isGradient && { 'data-background-style': 'gradient' }),
+        }}
+
+      >
+        {hasText(eyebrow) && <p class="block-eyebrow">{eyebrow}</p>}
+        {hasText(heading) && (
+          <h2 class="block-heading text-balance">{heading}</h2>
+        )}
+        {hasText(description) && (
+          <p
+            class:list={[
+              'block-body-lg text-balance',
+              isImageBg || isCompact ? 'text-muted' : 'text-section-subtle',
+            ]}
+          >
+            {description}
+          </p>
+        )}
+        {hasButton(button) && (
+          <div class={isCompact ? 'pt-stack-2' : 'flex justify-center pt-stack-2'}>
+            <Button
+              href={button.url}
+              variant={isImageBg || isCompact || isEmphasisBand ? 'primary' : 'secondary'}
+            >
+              {button.label}
+            </Button>
+          </div>
+        )}
+      </div>
+    </Container>
+  </div>
+</Section>
+  )
+}
+
+<style>
+  .cta-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .cta-bg-tint,
+  .cta-bg-shade {
+    position: absolute;
+    inset: 0;
+  }
+
+  .cta-bg-tint {
+    opacity: 0.4;
+    background: color-mix(in srgb, var(--color-background) 88%, transparent);
+  }
+
+  .cta-bg-tint[data-appearance='default'] {
+    background: linear-gradient(
+      155deg,
+      color-mix(in srgb, var(--color-button-bg) 58%, white) 0%,
+      color-mix(in srgb, var(--color-background) 92%, white) 52%,
+      color-mix(in srgb, var(--color-link) 38%, white) 100%
+    );
+  }
+
+  .cta-bg-tint[data-appearance='soft'] {
+    opacity: 0.46;
+    background: linear-gradient(
+      125deg,
+      color-mix(in srgb, var(--color-button-bg) 68%, white) 0%,
+      color-mix(in srgb, var(--color-background) 94%, white) 48%,
+      color-mix(in srgb, var(--color-link) 48%, white) 100%
+    );
+  }
+
+  .cta-bg-tint[data-appearance='tinted'] {
+    opacity: 0.54;
+    background: linear-gradient(
+      140deg,
+      color-mix(in srgb, var(--color-button-bg) 78%, var(--color-background)) 0%,
+      color-mix(in srgb, var(--color-link) 62%, var(--color-background)) 46%,
+      color-mix(in srgb, var(--color-button-bg) 70%, var(--color-background)) 100%
+    );
+  }
+
+  .cta-bg-tint[data-appearance='contrast'] {
+    opacity: 0.6;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-button-text) 28%, var(--color-background)) 0%,
+      var(--color-background) 50%,
+      color-mix(in srgb, var(--color-button-bg) 72%, var(--color-background)) 100%
+    );
+  }
+
+  .cta-bg-tint[data-appearance='dark'] {
+    opacity: 0.66;
+    background:
+      radial-gradient(
+        ellipse 120% 90% at 10% -10%,
+        color-mix(in srgb, var(--color-button-bg) 72%, var(--color-background)) 0%,
+        transparent 58%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-button-bg) 42%, var(--color-background)) 0%,
+        var(--color-background) 100%
+      );
+  }
+
+  .cta-bg-tint[data-appearance='accent'] {
+    opacity: 0.66;
+    background: linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--color-button-text) 24%, var(--color-background)) 0%,
+      color-mix(in srgb, var(--color-button-bg) 52%, var(--color-background)) 38%,
+      var(--color-background) 64%,
+      color-mix(in srgb, var(--color-link) 62%, var(--color-background)) 100%
+    );
+  }
+
+  .cta-bg-tint[data-background-style='gradient'][data-appearance='default'] {
+    background: linear-gradient(
+      155deg,
+      color-mix(in srgb, var(--color-button-bg) 16%, var(--color-background)) 0%,
+      color-mix(in srgb, var(--color-link) 8%, var(--color-background)) 36%,
+      color-mix(in srgb, var(--color-background) 48%, #ffffff) 70%,
+      color-mix(in srgb, var(--color-button-bg) 10%, var(--color-background)) 100%
+    );
+  }
+
+  .cta-bg-tint[data-background-style='gradient'][data-appearance='soft'] {
+    background: linear-gradient(
+      125deg,
+      color-mix(in srgb, var(--color-button-bg) 22%, var(--color-background)) 0%,
+      color-mix(in srgb, var(--color-link) 12%, var(--color-background)) 42%,
+      color-mix(in srgb, var(--color-background) 55%, #ffffff) 66%,
+      color-mix(in srgb, var(--color-button-bg) 14%, var(--color-background)) 100%
+    );
+  }
+
+  .cta-bg-tint[data-background-style='gradient'][data-appearance='tinted'] {
+    background: linear-gradient(
+      140deg,
+      color-mix(in srgb, var(--color-button-bg) 34%, var(--color-background)) 0%,
+      color-mix(in srgb, var(--color-link) 18%, var(--color-background)) 40%,
+      color-mix(in srgb, var(--color-background) 35%, #ffffff) 68%,
+      color-mix(in srgb, var(--color-button-bg) 24%, var(--color-background)) 100%
+    );
+  }
+
+  .cta-bg-tint[data-background-style='gradient'][data-appearance='contrast'] {
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-button-text) 42%, var(--color-background)) 0%,
+      var(--color-background) 42%,
+      color-mix(in srgb, var(--color-button-text) 28%, var(--color-background)) 68%,
+      color-mix(in srgb, var(--color-button-text) 52%, var(--color-background)) 100%
+    );
+  }
+
+  .cta-bg-tint[data-background-style='gradient'][data-appearance='dark'] {
+    background:
+      radial-gradient(
+        ellipse 130% 90% at 14% -6%,
+        color-mix(in srgb, var(--color-button-bg) 28%, var(--color-background)) 0%,
+        transparent 56%
+      ),
+      radial-gradient(
+        ellipse 85% 65% at 86% 104%,
+        color-mix(in srgb, var(--color-background) 84%, #000000) 0%,
+        transparent 60%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-background) 86%, #000000) 0%,
+        var(--color-background) 52%,
+        color-mix(in srgb, var(--color-button-bg) 26%, var(--color-background)) 100%
+      );
+  }
+
+  .cta-bg-tint[data-background-style='gradient'][data-appearance='accent'] {
+    background: linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--color-button-text) 38%, var(--color-background)) 0%,
+      color-mix(in srgb, var(--color-button-text) 22%, var(--color-background)) 34%,
+      var(--color-background) 54%,
+      color-mix(in srgb, var(--color-button-text) 46%, var(--color-background)) 100%
+    );
+  }
+
+  .cta-bg-shade {
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--color-text) 42%, transparent) 0%,
+      color-mix(in srgb, var(--color-text) 14%, transparent) 38%,
+      transparent 62%
+    );
+  }
+
+  .cta-copy-card {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .cta-copy-card:not([data-background-style='gradient']) {
+    background-color: color-mix(in srgb, var(--color-background) 82%, transparent);
+  }
+
+  .cta-copy-card[data-background-style='gradient'] {
+    background-color: transparent;
+  }
+
+  .cta-copy-card[data-background-style='gradient']::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0.72;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+
+  .cta-copy-card[data-background-style='gradient'][data-appearance='default']::before {
+    background-image: linear-gradient(
+      155deg,
+      color-mix(in srgb, var(--color-button-bg) 16%, var(--color-background)) 0%,
+      color-mix(in srgb, var(--color-link) 8%, var(--color-background)) 36%,
+      color-mix(in srgb, var(--color-background) 48%, #ffffff) 70%,
+      color-mix(in srgb, var(--color-button-bg) 10%, var(--color-background)) 100%
+    );
+  }
+
+  .cta-copy-card[data-background-style='gradient'][data-appearance='soft']::before {
+    background-image: linear-gradient(
+      125deg,
+      color-mix(in srgb, var(--color-button-bg) 22%, var(--color-background)) 0%,
+      color-mix(in srgb, var(--color-link) 12%, var(--color-background)) 42%,
+      color-mix(in srgb, var(--color-background) 55%, #ffffff) 66%,
+      color-mix(in srgb, var(--color-button-bg) 14%, var(--color-background)) 100%
+    );
+  }
+
+  .cta-copy-card[data-background-style='gradient'][data-appearance='tinted']::before {
+    background-image: linear-gradient(
+      140deg,
+      color-mix(in srgb, var(--color-button-bg) 34%, var(--color-background)) 0%,
+      color-mix(in srgb, var(--color-link) 18%, var(--color-background)) 40%,
+      color-mix(in srgb, var(--color-background) 35%, #ffffff) 68%,
+      color-mix(in srgb, var(--color-button-bg) 24%, var(--color-background)) 100%
+    );
+  }
+
+  .cta-copy-card[data-background-style='gradient'][data-appearance='contrast']::before {
+    background-image: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-button-text) 42%, var(--color-background)) 0%,
+      var(--color-background) 42%,
+      color-mix(in srgb, var(--color-button-text) 28%, var(--color-background)) 68%,
+      color-mix(in srgb, var(--color-button-text) 52%, var(--color-background)) 100%
+    );
+  }
+
+  .cta-copy-card[data-background-style='gradient'][data-appearance='dark']::before {
+    background-image:
+      radial-gradient(
+        ellipse 130% 90% at 14% -6%,
+        color-mix(in srgb, var(--color-button-bg) 28%, var(--color-background)) 0%,
+        transparent 56%
+      ),
+      radial-gradient(
+        ellipse 85% 65% at 86% 104%,
+        color-mix(in srgb, var(--color-background) 84%, #000000) 0%,
+        transparent 60%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-background) 86%, #000000) 0%,
+        var(--color-background) 52%,
+        color-mix(in srgb, var(--color-button-bg) 26%, var(--color-background)) 100%
+      );
+  }
+
+  .cta-copy-card[data-background-style='gradient'][data-appearance='accent']::before {
+    background-image: linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--color-button-text) 38%, var(--color-background)) 0%,
+      color-mix(in srgb, var(--color-button-text) 22%, var(--color-background)) 34%,
+      var(--color-background) 54%,
+      color-mix(in srgb, var(--color-button-text) 46%, var(--color-background)) 100%
+    );
+  }
+
+  :global(.section-cta-dark-gradient) .cta-copy-card {
+    --color-background: inherit;
+    --color-heading: inherit;
+    --color-subheading: inherit;
+    --color-text: inherit;
+    --color-link: inherit;
+    --color-link-hover: inherit;
+    --color-button-bg: inherit;
+    --color-button-text: inherit;
+    --color-button-bg-hover: inherit;
+    --color-button-text-hover: inherit;
+    --color-button-fg: inherit;
+    --color-button-fg-hover: inherit;
+    color: var(--color-text);
+    border-color: color-mix(in srgb, var(--color-text) 12%, var(--color-background));
+  }
+</style>

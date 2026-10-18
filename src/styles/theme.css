@@ -1,0 +1,256 @@
+/* Design tokens - Tailwind CSS v4 @theme */
+@theme {
+  /* Typography */
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", monospace;
+
+  /*
+   * Semantic color pairs (6 CMS-editable tones)
+   * Blocks use appearance-section (data-color × data-appearance) and text-* helpers - not raw primary/slate.
+   *
+   * 1. default       - page background + body text
+   * 2. surface       - alternating section background
+   * 3. card          - elevated cards (bg + text + border)
+   * 4. brand         - primary brand bands (stats, CTA)
+   * 5. brand-strong  - high-contrast emphasis sections
+   * 6. muted         - secondary body text (fg only)
+   *
+   * interactive and on-brand tokens are derived from brand at runtime.
+   * Each set also defines bg-hover, fg-hover, link, and link-hover tokens.
+   */
+
+  /* 1. default — gallery mat (Benjo vitrine) */
+  --color-default-bg: #f7f5f2;
+  --color-default-fg: #2a2826;
+  --color-default-bg-hover: #efece6;
+  --color-default-fg-hover: #1a1816;
+  --color-default-link: #5c4a28;
+  --color-default-link-hover: #3d3220;
+  --color-default-button-bg: var(--color-interactive-bg);
+  --color-default-button-bg-hover: var(--color-interactive-bg-hover);
+  --color-default-button-fg: var(--color-on-interactive-fg);
+  --color-default-button-fg-hover: var(--color-on-interactive-fg);
+  --color-default-button-secondary-bg: var(--color-card-bg);
+  --color-default-button-secondary-bg-hover: var(--color-default-bg-hover);
+  --color-default-button-secondary-fg: var(--color-default-fg);
+  --color-default-button-secondary-fg-hover: var(--color-default-fg-hover);
+  --color-default-button-secondary-border: var(--color-border-strong);
+
+  /* 2. surface */
+  --color-surface-bg: #f8fafc;
+  --color-surface-fg: #0f172a;
+  --color-surface-bg-hover: #eef2f6;
+  --color-surface-fg-hover: #020617;
+  --color-surface-link: #5c4a28;
+  --color-surface-link-hover: #3d3220;
+  --color-surface-button-bg: var(--color-interactive-bg);
+  --color-surface-button-bg-hover: var(--color-interactive-bg-hover);
+  --color-surface-button-fg: var(--color-on-interactive-fg);
+  --color-surface-button-fg-hover: var(--color-on-interactive-fg);
+  --color-surface-button-secondary-bg: var(--color-card-bg);
+  --color-surface-button-secondary-bg-hover: var(--color-surface-bg-hover);
+  --color-surface-button-secondary-fg: var(--color-surface-fg);
+  --color-surface-button-secondary-fg-hover: var(--color-surface-fg-hover);
+  --color-surface-button-secondary-border: var(--color-border-strong);
+
+  /* 3. card */
+  --color-card-bg: #ffffff;
+  --color-card-fg: #0f172a;
+  --color-card-border: #e2e8f0;
+  --color-card-bg-hover: #f5f5f5;
+  --color-card-fg-hover: #020617;
+  --color-card-link: #5c4a28;
+  --color-card-link-hover: #3d3220;
+  --color-card-button-bg: var(--color-interactive-bg);
+  --color-card-button-bg-hover: var(--color-interactive-bg-hover);
+  --color-card-button-fg: var(--color-on-interactive-fg);
+  --color-card-button-fg-hover: var(--color-on-interactive-fg);
+  --color-card-button-secondary-bg: color-mix(in srgb, var(--color-card-fg) 4%, var(--color-card-bg));
+  --color-card-button-secondary-bg-hover: var(--color-card-bg-hover);
+  --color-card-button-secondary-fg: var(--color-card-fg);
+  --color-card-button-secondary-fg-hover: var(--color-card-fg-hover);
+  --color-card-button-secondary-border: var(--color-border-strong);
+
+  /* 4. brand */
+  --color-brand-bg: #1e40af;
+  --color-brand-fg: #ffffff;
+  --color-brand-bg-hover: #1a3996;
+  --color-brand-fg-hover: #f8fafc;
+  --color-brand-link: #bfdbfe;
+  --color-brand-link-hover: #dbeafe;
+  --color-brand-button-bg: var(--color-brand-fg);
+  --color-brand-button-bg-hover: var(--color-brand-fg-hover);
+  --color-brand-button-fg: var(--color-brand-bg);
+  --color-brand-button-fg-hover: var(--color-brand-bg-hover);
+  --color-brand-button-secondary-bg: color-mix(in srgb, var(--color-brand-fg) 10%, var(--color-brand-bg));
+  --color-brand-button-secondary-bg-hover: color-mix(in srgb, var(--color-brand-fg) 18%, var(--color-brand-bg));
+  --color-brand-button-secondary-fg: var(--color-brand-fg);
+  --color-brand-button-secondary-fg-hover: var(--color-brand-fg-hover);
+  --color-brand-button-secondary-border: color-mix(in srgb, var(--color-brand-fg) 42%, var(--color-brand-bg));
+
+  /* 5. brand-strong */
+  --color-brand-strong-bg: #0f172a;
+  --color-brand-strong-fg: #ffffff;
+  --color-brand-strong-bg-hover: #1e293b;
+  --color-brand-strong-fg-hover: #f8fafc;
+  --color-brand-strong-link: #bfdbfe;
+  --color-brand-strong-link-hover: #dbeafe;
+  --color-brand-strong-button-bg: var(--color-brand-strong-fg);
+  --color-brand-strong-button-bg-hover: var(--color-brand-strong-fg-hover);
+  --color-brand-strong-button-fg: var(--color-brand-strong-bg);
+  --color-brand-strong-button-fg-hover: var(--color-brand-strong-bg-hover);
+  --color-brand-strong-button-secondary-bg: color-mix(in srgb, var(--color-brand-strong-fg) 10%, var(--color-brand-strong-bg));
+  --color-brand-strong-button-secondary-bg-hover: color-mix(in srgb, var(--color-brand-strong-fg) 18%, var(--color-brand-strong-bg));
+  --color-brand-strong-button-secondary-fg: var(--color-brand-strong-fg);
+  --color-brand-strong-button-secondary-fg-hover: var(--color-brand-strong-fg-hover);
+  --color-brand-strong-button-secondary-border: color-mix(in srgb, var(--color-brand-strong-fg) 42%, var(--color-brand-strong-bg));
+
+  /* 6. muted */
+  --color-muted-bg: #f1f5f9;
+  --color-muted-fg: #475569;
+  --color-muted-fg-subtle: #64748b;
+  --color-muted-bg-hover: #e8edf3;
+  --color-muted-fg-hover: #334155;
+  --color-muted-link: #5c4a28;
+  --color-muted-link-hover: #3d3220;
+  --color-muted-button-bg: var(--color-interactive-bg);
+  --color-muted-button-bg-hover: var(--color-interactive-bg-hover);
+  --color-muted-button-fg: var(--color-on-interactive-fg);
+  --color-muted-button-fg-hover: var(--color-on-interactive-fg);
+  --color-muted-button-secondary-bg: var(--color-card-bg);
+  --color-muted-button-secondary-bg-hover: var(--color-muted-bg-hover);
+  --color-muted-button-secondary-fg: var(--color-muted-fg);
+  --color-muted-button-secondary-fg-hover: var(--color-muted-fg-hover);
+  --color-muted-button-secondary-border: var(--color-border-strong);
+
+  /* 7. interactive — muted gold CTA */
+  --color-interactive-bg: #b8a066;
+  --color-interactive-bg-hover: #a08d58;
+  --color-on-interactive-fg: #1a1816;
+  --color-interactive-fg-hover: #f8fafc;
+  --color-interactive-fg: var(--color-interactive-link);
+  --color-interactive-link: #bfdbfe;
+  --color-interactive-link-hover: #dbeafe;
+  --color-interactive-button-bg: var(--color-on-interactive-fg);
+  --color-interactive-button-bg-hover: var(--color-interactive-fg-hover);
+  --color-interactive-button-fg: var(--color-interactive-bg);
+  --color-interactive-button-fg-hover: var(--color-interactive-bg-hover);
+  --color-interactive-button-secondary-bg: color-mix(in srgb, var(--color-on-interactive-fg) 10%, var(--color-interactive-bg));
+  --color-interactive-button-secondary-bg-hover: color-mix(in srgb, var(--color-on-interactive-fg) 18%, var(--color-interactive-bg));
+  --color-interactive-button-secondary-fg: var(--color-on-interactive-fg);
+  --color-interactive-button-secondary-fg-hover: var(--color-interactive-fg-hover);
+  --color-interactive-button-secondary-border: color-mix(in srgb, var(--color-on-interactive-fg) 42%, var(--color-interactive-bg));
+
+  /* 8. on-brand */
+  --color-on-brand-bg: #1e40af;
+  --color-on-brand-fg: #ffffff;
+  --color-on-brand-fg-muted: #dbeafe;
+  --color-on-brand-fg-subtle: #bfdbfe;
+  --color-on-brand-bg-hover: #1a3996;
+  --color-on-brand-fg-hover: #f8fafc;
+  --color-on-brand-link: #bfdbfe;
+  --color-on-brand-link-hover: #dbeafe;
+  --color-on-brand-button-bg: var(--color-on-brand-fg);
+  --color-on-brand-button-bg-hover: var(--color-on-brand-fg-hover);
+  --color-on-brand-button-fg: var(--color-on-brand-bg);
+  --color-on-brand-button-fg-hover: var(--color-on-brand-bg-hover);
+  --color-on-brand-button-secondary-bg: color-mix(in srgb, var(--color-on-brand-fg) 10%, var(--color-on-brand-bg));
+  --color-on-brand-button-secondary-bg-hover: color-mix(in srgb, var(--color-on-brand-fg) 18%, var(--color-on-brand-bg));
+  --color-on-brand-button-secondary-fg: var(--color-on-brand-fg);
+  --color-on-brand-button-secondary-fg-hover: var(--color-on-brand-fg-hover);
+  --color-on-brand-button-secondary-border: color-mix(in srgb, var(--color-on-brand-fg) 42%, var(--color-on-brand-bg));
+
+  /* Active tone tokens - overridden per tone/card context */
+  --color-link: var(--color-default-link);
+  --color-link-hover: var(--color-default-link-hover);
+  --color-bg-hover: var(--color-default-bg-hover);
+  --color-fg-hover: var(--color-default-fg-hover);
+  --color-button-bg: var(--color-default-button-bg);
+  --color-button-bg-hover: var(--color-default-button-bg-hover);
+  --color-button-fg: var(--color-default-button-fg);
+  --color-button-fg-hover: var(--color-default-button-fg-hover);
+  --color-button-secondary-bg: var(--color-default-button-secondary-bg);
+  --color-button-secondary-bg-hover: var(--color-default-button-secondary-bg-hover);
+  --color-button-secondary-fg: var(--color-default-button-secondary-fg);
+  --color-button-secondary-fg-hover: var(--color-default-button-secondary-fg-hover);
+  --color-button-secondary-border: var(--color-default-button-secondary-border);
+
+  /* Accent lines (timeline, focus) - derived from brand */
+  --color-accent-line: #b8a066;
+  --color-accent-line-subtle: color-mix(in srgb, #b8a066 45%, #f7f5f2);
+  --color-surface: var(--color-surface-bg);
+  --color-border: var(--color-card-border);
+  --color-border-strong: #cbd5e1;
+  --color-muted: var(--color-muted-fg-subtle);
+
+  /* Raw brand scale - theme authoring only; blocks should not use these */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: var(--color-on-brand-fg-muted);
+  --color-primary-200: var(--color-on-brand-fg-subtle);
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: var(--color-accent-line);
+  --color-primary-700: var(--color-interactive-fg);
+  --color-primary-800: var(--color-brand-bg);
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
+
+  /* Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.06);
+  --shadow-lg: 0 10px 15px -3px rgb(15 23 42 / 0.08), 0 4px 6px -4px rgb(15 23 42 / 0.06);
+  --shadow-card: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.06);
+
+  /* Layout */
+  --container-page: 72rem;
+  --container-narrow: 48rem;
+  --container-prose: 42rem;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fade-in: fade-in 0.4s var(--ease-out-expo) both;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@utility skip-link {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 100;
+  padding: 0.625rem 1rem;
+  border-radius: var(--radius-md);
+  background-color: var(--color-button-bg);
+  color: var(--color-button-text, var(--color-button-fg));
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform 150ms var(--ease-out-expo);
+
+  &:focus-visible {
+    transform: translateY(0);
+    outline: 2px solid var(--color-accent-line);
+    outline-offset: 2px;
+  }
+}

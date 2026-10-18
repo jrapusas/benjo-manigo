@@ -1,0 +1,20 @@
+---
+import { artistNameLines } from '../../lib/artistName';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<span class:list={['artist-name-stack', className]}>
+  <span class="artist-name-stack__line">{artistNameLines[0]}</span>
+  <span class="artist-name-stack__line artist-name-stack__line--nickname">
+    <span class="artist-name-stack__quote-open" aria-hidden="true"></span>{artistNameLines[1]}<span
+      class="artist-name-stack__quote-close"
+      aria-hidden="true"></span
+    >
+  </span>
+  <span class="artist-name-stack__line">{artistNameLines[2]}</span>
+</span>

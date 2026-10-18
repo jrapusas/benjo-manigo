@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../ui/Section.astro';
+import BlockShowcase from '../blocks/BlockShowcase.astro';
+import ColorLinkShowcase from '../blocks/ColorLinkShowcase.astro';
+import type { ShowcaseSection } from '../../lib/blockShowcaseShared';
+import { buildSeo } from '../../lib/seo';
+
+interface Props {
+  path: string;
+  pageTitle: string;
+  metaDescription: string;
+  heading: string;
+  intro: string;
+  sections: ShowcaseSection[];
+}
+
+const { path, pageTitle, metaDescription, heading, intro, sections } = Astro.props;
+
+const seo = buildSeo({
+  title: pageTitle,
+  path,
+  metaDescription,
+});
+---
+
+<BaseLayout
+  title={seo.title}
+  description={seo.description}
+  canonical={seo.canonical}
+  ogTitle={seo.openGraph.title}
+  ogDescription={seo.openGraph.description}
+  ogImage={seo.openGraph.image}
+>
+  <Section appearance="soft" padding="default">
+    <div class="container-page">
+      <p class="block-eyebrow">Design system</p>
+      <h1 class="mt-3 text-4xl font-bold tracking-tight text-balance sm:text-5xl">
+        {heading}
+      </h1>
+      <p class="mt-4 max-w-3xl text-lg text-muted text-balance">
+        {intro}
+      </p>
+
+      <nav class="mt-10" aria-label="Block types">
+        <ul class="flex flex-wrap gap-2">
+          <li>
+            <a
+              href="#link-colors"
+              class="inline-flex rounded-full border border-subtle bg-elevated px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:text-interactive"
+            >
+              Link colors
+            </a>
+          </li>
+          {
+            sections.map((section) => (
+              <li>
+                <a
+                  href={`#${section.id}`}
+                  class="inline-flex rounded-full border border-subtle bg-elevated px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:text-interactive"
+                >
+                  {section.name}
+                  {section.variations.length > 1 && (
+                    <span class="ml-1.5 text-muted-subtle">({section.variations.length})</span>
+                  )}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+  </Section>
+
+  <ColorLinkShowcase />
+  <BlockShowcase sections={sections} />
+</BaseLayout>

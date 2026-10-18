@@ -1,0 +1,85 @@
+---
+import Container from '../ui/Container.astro';
+import Section from '../ui/Section.astro';
+import BlockHeader from '../ui/BlockHeader.astro';
+import Icon from '../ui/Icon.astro';
+import type { BlockValue } from '../../lib/types';
+import { hasText } from '../../lib/blockFields';
+
+interface Props extends BlockValue<'featureGrid'> {}
+
+const {
+  color,
+  appearance,
+  heading,
+  description,
+  layout = 'grid',
+  features = [],
+} = Astro.props;
+const visibleFeatures = features.filter(
+  (feature) => hasText(feature.title) || hasText(feature.description),
+);
+const isList = layout === 'list';
+const templateClass = isList ? 'section-featuregrid-list' : 'section-featuregrid';
+---
+
+<Section color={color} appearance={appearance ?? 'default'} class={templateClass}>
+  <Container>
+    <BlockHeader heading={heading} description={description} />
+    {
+      isList ? (
+        <ul class="mx-auto flex max-w-3xl flex-col gap-block-sm">
+          {
+            visibleFeatures.map((feature) => (
+              <li class="card card-hover flex flex-col gap-block block-card sm:flex-row sm:items-start">
+                {feature.icon && (
+                  <div class="icon-box shrink-0 text-interactive">
+                    <Icon src={feature.icon} />
+                  </div>
+                )}
+                <div class="min-w-0 flex-1">
+                  {hasText(feature.title) && <h3 class="block-item-title">{feature.title}</h3>}
+                  {hasText(feature.description) && (
+                    <p class="mt-stack-2 block-body-sm text-muted">{feature.description}</p>
+                  )}
+                </div>
+                {feature.link?.label && feature.link?.url && (
+                  <a href={feature.link.url} class="block-link shrink-0 sm:ml-auto sm:self-center">
+                    {feature.link.label}
+                    <span aria-hidden="true">→</span>
+                  </a>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+      ) : (
+        <div class="item-grid item-grid-cols-3">
+          {
+            visibleFeatures.map((feature) => (
+              <article class="card card-hover card-fill block-card">
+                {feature.icon && (
+                  <div class="icon-box mb-stack-5 self-start text-interactive">
+                    <Icon src={feature.icon} />
+                  </div>
+                )}
+                {hasText(feature.title) && <h3 class="block-item-title-lg">{feature.title}</h3>}
+                {hasText(feature.description) && (
+                  <p class="mt-stack-3 flex-1 block-body-sm text-muted">
+                    {feature.description}
+                  </p>
+                )}
+                {feature.link?.label && feature.link?.url && (
+                  <a href={feature.link.url} class="block-link mt-auto pt-stack-4">
+                    {feature.link.label}
+                    <span aria-hidden="true">→</span>
+                  </a>
+                )}
+              </article>
+            ))
+          }
+        </div>
+      )
+    }
+  </Container>
+</Section>

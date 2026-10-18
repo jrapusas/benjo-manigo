@@ -1,0 +1,385 @@
+---
+import Container from '../ui/Container.astro';
+import Section from '../ui/Section.astro';
+import Button from '../ui/Button.astro';
+import MediaImage from '../ui/MediaImage.astro';
+import type { BlockValue } from '../../lib/types';
+import { hasButton, hasText } from '../../lib/blockFields';
+import ArtistNameHeading from '../ui/ArtistNameHeading.astro';
+
+const HERO_SIZES = '(min-width: 1024px) 50vw, 100vw';
+const BLEED_IMAGE_FIT = 'object-contain object-center';
+
+interface Props extends BlockValue<'hero'> {}
+
+const {
+  color,
+  appearance,
+  eyebrow,
+  title,
+  description,
+  primaryCta,
+  secondaryCta,
+  image,
+  imageAlt = '',
+  variant = 'splitImageContained',
+} = Astro.props;
+
+const framedImageAlt = imageAlt.trim();
+const bleedImageAlt = framedImageAlt;
+const bleedImageIsDecorative = !bleedImageAlt;
+
+/** Map legacy CMS values until content is migrated. */
+function normalizeHeroVariant(value: string) {
+  switch (value) {
+    case 'split':
+    case 'default':
+      return 'splitImageContained';
+    case 'fullBleed':
+      return 'splitImageBleedHalf';
+    default:
+      return value;
+  }
+}
+
+const heroVariant = normalizeHeroVariant(variant);
+const isImageBg = heroVariant === 'imageBg';
+const isSplitImageContained = heroVariant === 'splitImageContained';
+const isSplitImageBleedHalf = heroVariant === 'splitImageBleedHalf';
+const isSplitTextBleed = heroVariant === 'splitTextBleed';
+const isSplitBleed = isSplitImageBleedHalf || isSplitTextBleed;
+const isCentered = heroVariant === 'centered' || isImageBg;
+const templateClass = 'section-hero';
+const showFramedMedia = Boolean(
+  image && (isSplitImageContained || (isCentered && !isImageBg)),
+);
+const showBleedMedia = Boolean(image && isSplitBleed);
+const copyInContainer = isSplitImageBleedHalf;
+---
+
+{
+  isSplitBleed ? (
+    <Section
+      color={color}
+      appearance={appearance ?? 'default'}
+      padding="none"
+      class:list={[templateClass, 'hero-split-bleed overflow-hidden']}
+    >
+      <div class="relative min-h-[clamp(24rem,62vh,36rem)] lg:min-h-[36rem]">
+        {
+          showBleedMedia && (
+            <>
+              <div
+                class="absolute inset-y-0 right-0 hidden w-1/2 overflow-hidden lg:block"
+                aria-hidden={bleedImageIsDecorative ? 'true' : undefined}
+              >
+                <MediaImage
+                  src={image}
+                  alt={bleedImageAlt}
+                  class:list={['absolute inset-0 h-full w-full', BLEED_IMAGE_FIT]}
+                  sizes={HERO_SIZES}
+                  loading="eager"
+                  fetchpriority="high"
+                />
+              </div>
+              <div class="relative aspect-[3/4] w-full lg:hidden">
+                <MediaImage
+                  src={image}
+                  alt={bleedImageAlt}
+                  class:list={['absolute inset-0 h-full w-full', BLEED_IMAGE_FIT]}
+                  sizes="100vw"
+                  loading="eager"
+                  fetchpriority="high"
+                />
+              </div>
+            </>
+          )
+        }
+        <div class="relative z-[1]">
+          {
+            copyInContainer ? (
+              <Container>
+                <div class="hero-split-bleed-grid hero-split-bleed-grid-contained">
+                  <div class="hero-copy">
+                    {hasText(title) && (
+                      <ArtistNameHeading title={title} class="hero-title" />
+                    )}
+                    {hasText(eyebrow) && <p class="hero-placard">{eyebrow}</p>}
+                    {hasText(description) && (
+                      <p class="hero-description">{description}</p>
+                    )}
+                    {(hasButton(primaryCta) || hasButton(secondaryCta)) && (
+                      <div class="hero-actions">
+                        {hasButton(primaryCta) && (
+                          <Button href={primaryCta.url}>{primaryCta.label}</Button>
+                        )}
+                        {hasButton(secondaryCta) && (
+                          <Button href={secondaryCta.url} variant="secondary">
+                            {secondaryCta.label}
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  {showBleedMedia && (
+                    <div class="hidden lg:block" aria-hidden="true" />
+                  )}
+                </div>
+              </Container>
+            ) : (
+              <div class="hero-split-bleed-grid hero-split-bleed-grid-edge">
+                <div class="hero-copy">
+                  {hasText(title) && (
+                    <ArtistNameHeading title={title} class="hero-title" />
+                  )}
+                  {hasText(eyebrow) && <p class="hero-placard">{eyebrow}</p>}
+                  {hasText(description) && (
+                    <p class="hero-description">{description}</p>
+                  )}
+                  {(hasButton(primaryCta) || hasButton(secondaryCta)) && (
+                    <div class="hero-actions">
+                      {hasButton(primaryCta) && (
+                        <Button href={primaryCta.url}>{primaryCta.label}</Button>
+                      )}
+                      {hasButton(secondaryCta) && (
+                        <Button href={secondaryCta.url} variant="secondary">
+                          {secondaryCta.label}
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                </div>
+                {showBleedMedia && (
+                  <div class="hidden lg:block" aria-hidden="true" />
+                )}
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </Section>
+  ) : (
+    <Section
+      color={color}
+      appearance={appearance ?? 'default'}
+      padding="large"
+      class:list={[
+        templateClass,
+        'relative overflow-hidden',
+        isImageBg && 'hero-image-bg',
+        isSplitImageContained && 'hero-split-contained',
+      ]}
+    >
+      {
+        isImageBg && image && (
+          <div class="hero-bg" aria-hidden={bleedImageIsDecorative ? 'true' : undefined}>
+            <MediaImage
+              src={image}
+              alt={bleedImageAlt}
+              class="h-full w-full object-contain object-center"
+              sizes="100vw"
+              loading="eager"
+              fetchpriority="high"
+            />
+            <div class="hero-bg-overlay"></div>
+          </div>
+        )
+      }
+      {!isImageBg && <div class="hero-grid-lines" aria-hidden="true"></div>}
+      <div class:list={['hero-content', isImageBg && 'hero-content-image-bg']}>
+        <Container>
+          <div
+            class:list={[
+              'hero-layout',
+              isSplitImageContained && 'hero-layout-split',
+              isCentered && !isSplitImageContained && 'hero-layout-centered',
+            ]}
+          >
+            <div class="hero-copy">
+              {hasText(title) && (
+                <ArtistNameHeading title={title} class="hero-title" />
+              )}
+              {hasText(eyebrow) && <p class="hero-placard">{eyebrow}</p>}
+              {hasText(description) && (
+                <p class="hero-description">{description}</p>
+              )}
+              {(hasButton(primaryCta) || hasButton(secondaryCta)) && (
+                <div class="hero-actions">
+                  {hasButton(primaryCta) && (
+                    <Button href={primaryCta.url}>{primaryCta.label}</Button>
+                  )}
+                  {hasButton(secondaryCta) && (
+                    <Button href={secondaryCta.url} variant="secondary">
+                      {secondaryCta.label}
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {
+              showFramedMedia && (
+                <div class="hero-media">
+                  <div class="hero-media-frame media-frame art-mat">
+                    <MediaImage
+                      src={image}
+                      alt={framedImageAlt}
+                      class="hero-media-image"
+                      sizes={HERO_SIZES}
+                      loading="eager"
+                      fetchpriority="high"
+                    />
+                  </div>
+                </div>
+              )
+            }
+          </div>
+        </Container>
+      </div>
+    </Section>
+  )
+}
+
+<style>
+  .hero-grid-lines {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--color-text) 6%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 6%, transparent) 1px, transparent 1px);
+    background-size: calc(100% / 12) 100%, 100% 4rem;
+    mask-image: linear-gradient(to bottom, black 55%, transparent);
+    opacity: 0.45;
+  }
+
+  .hero-split-bleed-grid {
+    display: grid;
+    align-items: center;
+    gap: 2.5rem;
+    padding-block: var(--space-hero-y);
+  }
+
+  .hero-split-bleed-grid-contained {
+    width: 100%;
+  }
+
+  .hero-split-bleed-grid-edge {
+    padding-inline: var(--site-margin);
+    width: 100%;
+  }
+
+  @media (width >= 64rem) {
+    .hero-split-bleed-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-layout-gap);
+      min-height: 36rem;
+    }
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--color-background) 96%, transparent),
+      color-mix(in srgb, var(--color-background) 78%, transparent) 50%,
+      color-mix(in srgb, var(--color-background) 52%, transparent)
+    );
+  }
+
+  .hero-content-image-bg {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    min-height: clamp(24rem, 62vh, 36rem);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    width: 100%;
+  }
+
+  .hero-layout-split {
+    @media (width < 64rem) {
+      .hero-media {
+        order: -1;
+      }
+    }
+
+    @media (width >= 64rem) {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      align-items: end;
+      gap: var(--space-layout-gap);
+    }
+  }
+
+  .hero-layout-centered {
+    margin-inline: auto;
+    max-width: 48rem;
+    text-align: center;
+    align-items: center;
+  }
+
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-width: 0;
+    max-width: 38rem;
+  }
+
+  .hero-layout-centered .hero-copy {
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero-description {
+    max-width: 34rem;
+    font-size: var(--text-body-lg);
+    line-height: var(--leading-body-lg);
+    color: var(--color-subheading, var(--color-muted-fg));
+    text-wrap: balance;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding-top: 0.25rem;
+  }
+
+  .hero-layout-centered .hero-actions {
+    justify-content: center;
+  }
+
+  .hero-media {
+    width: 100%;
+  }
+
+  .hero-media-frame {
+    position: relative;
+    display: inline-flex;
+    max-width: 100%;
+  }
+
+  .hero-media-image {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: min(68vh, 38rem);
+  }
+
+</style>

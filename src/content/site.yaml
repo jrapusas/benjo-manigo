@@ -1,0 +1,10 @@
+companyName: Jonathan “Benjo” Manigo — Oil Paintings
+tagline: Oil paintings by Jonathan “Benjo” Manigo
+navigation:
+  - label: Home
+    href: /
+  - label: Work
+    href: /work
+  - label: About
+    href: /about
+footerText: © Jonathan “Benjo” Manigo. Oil paintings.

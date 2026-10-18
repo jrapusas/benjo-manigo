@@ -1,0 +1,120 @@
+---
+// ROOT LAYOUT - wraps every page with <html>, <head>, header, footer.
+// Other layouts (PageLayout, PostLayout) nest inside via <slot />.
+
+import '../styles/global.css'; // side-effect import: CSS is bundled into the site
+import { siteConfig } from '../config/site';
+import { reader } from '../lib/reader';
+import { navigationForEnv } from '../lib/devOnly';
+import { navPathLabels, resolveNavigation } from '../lib/navigation';
+import { organizationJsonLd } from '../lib/structuredData';
+import { getSitePalette, resolveSitePalette, sitePaletteColorId } from '../lib/sitePalette';
+import { siteThemeAttributeCss, siteThemeInlineStyle } from '../lib/siteTheme';
+import Header from '../components/ui/Header.astro';
+import Footer from '../components/ui/Footer.astro';
+import BackToTop from '../components/ui/BackToTop.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import { buildBreadcrumbs } from '../lib/breadcrumbs';
+import { resolveOgImage } from '../lib/media';
+
+// interface Props - TypeScript contract for attributes passed TO this component
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string; // ? = optional prop
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+}
+
+// Astro.props - destructuring with defaults (ogImage falls back to site default)
+const {
+  title,
+  description,
+  canonical,
+  ogTitle,
+  ogDescription,
+  ogImage,
+} = Astro.props;
+
+const resolvedOgImage = await resolveOgImage(ogImage);
+
+const site = await reader.singletons.site.read();
+// ?? nullish coalescing - use fallback array if navigation is missing
+const navigation = navigationForEnv(
+  resolveNavigation(site?.navigation ?? siteConfig.navigation.map((item) => ({ ...item }))),
+);
+
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, siteConfig.url).toString();
+// Astro.url - URL object for the current page (available in every .astro file)
+const companyName = site?.companyName ?? siteConfig.name;
+const paletteInput = getSitePalette();
+const sitePalette = resolveSitePalette(paletteInput);
+const themeStyle = siteThemeInlineStyle(paletteInput);
+const attributeThemeCss = siteThemeAttributeCss(paletteInput);
+const pathname = Astro.url.pathname;
+const pathLabels = navPathLabels(navigation);
+const breadcrumbs = buildBreadcrumbs(pathname, title, pathLabels);
+---
+
+<!doctype html>
+<html lang={siteConfig.locale} style={themeStyle}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={ogTitle ?? title} />
+    <meta property="og:description" content={ogDescription ?? description} />
+    <meta property="og:url" content={canonicalUrl} />
+    {resolvedOgImage && (
+      <meta property="og:image" content={new URL(resolvedOgImage, siteConfig.url).toString()} />
+    )}
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    {attributeThemeCss && <style is:inline set:html={attributeThemeCss} />}
+    <script type="application/ld+json" set:html={JSON.stringify(organizationJsonLd())} />
+  </head>
+  <body
+    class="appearance-section flex min-h-screen flex-col"
+    data-color={sitePaletteColorId(sitePalette)}
+    data-appearance="default"
+  >
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <Header
+      companyName={companyName}
+      navigation={navigation}
+      currentPath={Astro.url.pathname}
+    />
+
+    <!-- <slot /> - placeholder where child layouts/pages inject their content -->
+    <main id="main-content" class="flex-1" tabindex="-1">
+      {pathname !== '/' && <Breadcrumbs items={breadcrumbs} />}
+      <slot />
+    </main>
+
+    <Footer
+      companyName={companyName}
+      footerText={site?.footerText}
+      navigation={navigation}
+      siteColor={sitePaletteColorId(sitePalette)}
+    />
+
+    <BackToTop />
+
+    <script>
+      function bootBackToTop() {
+        void import('../scripts/back-to-top.ts').then(({ initBackToTop }) => initBackToTop());
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bootBackToTop, { once: true });
+      } else {
+        bootBackToTop();
+      }
+    </script>
+  </body>
+</html>

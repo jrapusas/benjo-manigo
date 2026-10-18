@@ -1,0 +1,126 @@
+---
+import { siteConfig } from '../../config/site';
+import type { BaseColorName } from '../../lib/color/types';
+
+interface NavItem {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  companyName: string;
+  footerText?: string;
+  navigation: NavItem[];
+  siteColor: BaseColorName;
+}
+
+const { companyName, footerText, siteColor } = Astro.props;
+const year = new Date().getFullYear();
+const { contact, footer, disclaimer } = siteConfig;
+---
+
+<footer
+  class="appearance-section site-footer border-t border-subtle vitrine-footer"
+  data-color={siteColor}
+  data-appearance="soft"
+
+>
+  <div class="container-page py-16 lg:py-24">
+    <div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+      <div class="lg:col-span-6">
+        <p class="footer-signature">{siteConfig.shortName}</p>
+        <p class="mt-4 max-w-sm text-sm leading-relaxed text-muted">
+          {footerText ?? footer.description}
+        </p>
+        <a href={siteConfig.cta.primary.href} class="footer-cta block-link mt-6">
+          {siteConfig.cta.primary.label}
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+
+      <div class="lg:col-span-3">
+        <p class="block-meta">Work</p>
+        <ul class="mt-4 grid grid-cols-2 gap-x-6 gap-y-2">
+          {
+            footer.services.map((item) => (
+              <li>
+                <a href={item.href} class="text-sm text-muted transition-colors hover:text-interactive">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      {
+        footer.regulatory?.length ? (
+          <div class="lg:col-span-2">
+            <p class="block-meta">{footer.regulatoryTitle ?? 'Regulatory Areas'}</p>
+            <ul class="mt-4 space-y-2">
+              {
+                footer.regulatory.map((item) => (
+                  <li>
+                    <a href={item.href} class="text-sm text-muted transition-colors hover:text-interactive">
+                      {item.label}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        ) : null
+      }
+
+      <div class="lg:col-span-3">
+        <p class="block-meta">Site</p>
+        <ul class="mt-4 space-y-2 text-sm text-muted">
+          {
+            [...footer.company, ...footer.resources].map((item) => (
+              <li>
+                <a href={item.href} class="text-sm text-muted transition-colors hover:text-interactive">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+          {
+            contact.email && !contact.email.startsWith('[') ? (
+              <li>
+                <a href={`mailto:${contact.email}`} class="text-interactive">{contact.email}</a>
+              </li>
+            ) : null
+          }
+          {
+            contact.phone ? (
+              <li>
+                <a href={`tel:${contact.phone.replace(/\s/g, '')}`} class="text-interactive">
+                  {contact.phone}
+                </a>
+              </li>
+            ) : null
+          }
+          {contact.address && <li>{contact.address}</li>}
+          {contact.hours && <li>{contact.hours}</li>}
+        </ul>
+      </div>
+    </div>
+
+    {disclaimer && <p class="mt-12 max-w-3xl text-xs leading-relaxed text-muted-subtle">{disclaimer}</p>}
+
+    <div class="mt-8 flex flex-col gap-3 border-t border-subtle pt-8 text-xs text-muted-subtle sm:flex-row sm:items-center sm:justify-between">
+      <p>© {year} {companyName}. All rights reserved.</p>
+      {
+        footer.legal.length > 0 && (
+          <div class="flex gap-4">
+            {
+          footer.legal.map((item) => (
+            <a href={item.href} class="hover:text-interactive">{item.label}</a>
+          ))
+            }
+          </div>
+        )
+      }
+    </div>
+  </div>
+</footer>

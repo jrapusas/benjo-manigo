@@ -1,0 +1,144 @@
+---
+import Container from '../ui/Container.astro';
+import Section from '../ui/Section.astro';
+import Button from '../ui/Button.astro';
+import MediaImage from '../ui/MediaImage.astro';
+import DocumentContent from '../react/DocumentContent';
+import type { BlockValue } from '../../lib/types';
+import { hasButton, hasDocument, hasText } from '../../lib/blockFields';
+
+/** Image left: 55|45. Image right: 45|55 (swap column weights, not cell sizes). */
+const SPLIT_GRID_BASE = 'grid w-full grid-cols-1 lg:aspect-[80/33] lg:items-stretch';
+const SPLIT_IMAGE_FIRST = 'lg:grid-cols-[55fr_45fr]';
+const SPLIT_TEXT_FIRST = 'lg:grid-cols-[45fr_55fr]';
+const IMAGE_TEXT_SIZES = '(min-width: 1024px) 55vw, 100vw';
+const IMAGE_TEXT_ASPECT = 'aspect-[4/3] w-full';
+const IMAGE_TEXT_FIT = 'media-cover absolute inset-0 h-full w-full object-[center_35%]';
+const SPLIT_IMAGE_CELL =
+  'relative min-h-0 w-full aspect-[4/3] overflow-hidden lg:aspect-auto lg:h-full';
+const SPLIT_COPY_CELL =
+  'gallery-bleed-half-copy flex min-h-0 w-full flex-col justify-center gap-block py-block-inset max-lg:px-[var(--site-margin)] lg:h-full';
+
+interface Props extends BlockValue<'imageText'> {}
+
+const {
+  color,
+  appearance,
+  title,
+  content,
+  image,
+  imageAlt = '',
+  imagePosition = 'left',
+  cta,
+  variant = 'default',
+} = Astro.props;
+
+const templateClass = 'section-imagetext';
+const imageFirst = imagePosition === 'left';
+const isFullBleed = variant === 'fullBleed';
+const sectionAppearance = appearance ?? 'default';
+const contentImageAlt = imageAlt.trim();
+const splitColumns = imageFirst ? SPLIT_IMAGE_FIRST : SPLIT_TEXT_FIRST;
+---
+
+{
+  isFullBleed ? (
+    <Section color={color} appearance={sectionAppearance} padding="none" class:list={[templateClass, 'overflow-hidden']}>
+      <div class:list={[SPLIT_GRID_BASE, splitColumns]}>
+        {
+          imageFirst ? (
+            <>
+              {image && (
+                <div class={SPLIT_IMAGE_CELL}>
+                  <MediaImage
+                    src={image}
+                    alt={contentImageAlt}
+                    class={IMAGE_TEXT_FIT}
+                    sizes={IMAGE_TEXT_SIZES}
+                  />
+                </div>
+              )}
+              <div class:list={[SPLIT_COPY_CELL, 'gallery-bleed-half-copy--after-image']}>
+                {hasText(title) && <h2 class="block-heading">{title}</h2>}
+                <DocumentContent document={content} />
+                {hasButton(cta) && (
+                  <div class="pt-stack-2">
+                    <Button href={cta.url}>{cta.label}</Button>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <div
+                class:list={[
+                  SPLIT_COPY_CELL,
+                  'order-2 lg:order-none',
+                  'gallery-bleed-half-copy--before-image',
+                ]}
+              >
+                {hasText(title) && <h2 class="block-heading">{title}</h2>}
+                <DocumentContent document={content} />
+                {hasButton(cta) && (
+                  <div class="pt-stack-2">
+                    <Button href={cta.url}>{cta.label}</Button>
+                  </div>
+                )}
+              </div>
+              {image && (
+                <div class:list={[SPLIT_IMAGE_CELL, 'order-1 lg:order-none']}>
+                  <MediaImage
+                    src={image}
+                    alt={contentImageAlt}
+                    class={IMAGE_TEXT_FIT}
+                    sizes={IMAGE_TEXT_SIZES}
+                  />
+                </div>
+              )}
+            </>
+          )
+        }
+      </div>
+    </Section>
+  ) : (
+    <Section color={color} appearance={sectionAppearance} class={templateClass}>
+      <Container>
+        <div class:list={['grid grid-cols-1 items-stretch gap-layout', splitColumns]}>
+          {
+            image && imageFirst && (
+              <div class:list={['imagetext-media relative overflow-hidden', IMAGE_TEXT_ASPECT]}>
+                <MediaImage
+                  src={image}
+                  alt={contentImageAlt}
+                  class={IMAGE_TEXT_FIT}
+                  sizes={IMAGE_TEXT_SIZES}
+                />
+              </div>
+            )
+          }
+          <div class="flex flex-col gap-block">
+            {hasText(title) && <h2 class="block-heading">{title}</h2>}
+            <DocumentContent document={content} />
+            {hasButton(cta) && (
+              <div class="pt-stack-2">
+                <Button href={cta.url}>{cta.label}</Button>
+              </div>
+            )}
+          </div>
+          {
+            image && !imageFirst && (
+              <div class:list={['imagetext-media relative overflow-hidden', IMAGE_TEXT_ASPECT]}>
+                <MediaImage
+                  src={image}
+                  alt={contentImageAlt}
+                  class={IMAGE_TEXT_FIT}
+                  sizes={IMAGE_TEXT_SIZES}
+                />
+              </div>
+            )
+          }
+        </div>
+      </Container>
+    </Section>
+  )
+}
