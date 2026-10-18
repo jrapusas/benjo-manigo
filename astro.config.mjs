@@ -15,6 +15,7 @@ import {
 } from './scripts/keystatic-media-ui-patch.mjs';
 import { siteConfig } from './src/config/site.ts';
 import { DEV_ONLY_PATHS } from './src/lib/devOnly.ts';
+import { hideProductionSite } from './src/lib/liveSiteFlag.ts';
 
 /** Keystatic `storage: local` needs Node.js - Cloudflare workerd breaks the API in dev. */
 const useCloudflareAdapter = process.argv.some((arg) =>
@@ -159,6 +160,7 @@ export default defineConfig({
     keystaticApiOnly(),
     sitemap({
       filter: (page) => {
+        if (hideProductionSite) return false;
         const pathname = new URL(page).pathname.replace(/\/$/, '') || '/';
         return !DEV_ONLY_PATHS.has(pathname);
       },

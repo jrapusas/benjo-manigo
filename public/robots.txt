@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://acme-consulting.example.com/sitemap-index.xml
