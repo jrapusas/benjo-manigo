@@ -277,8 +277,12 @@ The site uses **static prerendering** for public pages and **on-demand routes** 
 | Setting | Value |
 |---------|-------|
 | Build command | `npm run build` |
-| Output directory | `dist` |
-| Node version | 22+ |
+| Build output directory | `dist/client` (also set in `wrangler.jsonc` as `pages_build_output_dir`) |
+| Node version | `22` (`.nvmrc` / `NODE_VERSION` env) |
+
+If the dashboard still shows **No build command specified**, set **Build command** to `npm run build` manually. Wrangler only declares the output folder and runtime flags.
+
+Do **not** set the output directory to the repo root (`.`). A broken `.context/project` symlink used to live in git and triggers: *build output directory contains links to files that can't be accessed*.
 
 #### 1. Create a GitHub App
 

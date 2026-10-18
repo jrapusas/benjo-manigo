@@ -34,6 +34,9 @@ Thumbs.db
 .specstory/
 skills-lock.json
 
+# JA2B brain link (local only — see .context/README.md)
+.context/project
+
 # design tooling & internal docs
 .impeccable/
 .visual-check/
