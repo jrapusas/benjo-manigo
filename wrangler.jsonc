@@ -1,5 +1,6 @@
 {
   // Cloudflare Pages (Git): output dir + runtime flags only.
+  // Dashboard MUST set Build command to `npm run build` — Pages ignores `build` here.
   // Do not set `assets.binding` here — Pages reserves "ASSETS".
   // Worker + assets config is emitted to dist/server/wrangler.json after build.
   "name": "benjo-manigo",

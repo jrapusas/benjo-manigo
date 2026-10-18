@@ -276,11 +276,11 @@ The site uses **static prerendering** for public pages and **on-demand routes** 
 
 | Setting | Value |
 |---------|-------|
-| Build command | `npm run build` |
-| Build output directory | `dist/client` (also set in `wrangler.jsonc` as `pages_build_output_dir`) |
+| Build command | `npm run build` (**required in dashboard**) |
+| Build output directory | `dist/client` (from `wrangler.jsonc` `pages_build_output_dir`; dashboard field can stay empty) |
 | Node version | `22` (`.nvmrc` / `NODE_VERSION` env) |
 
-Set **Build command** to `npm run build` in the Pages dashboard (Git-connected projects do not read `build` from `wrangler.jsonc`).
+In **Workers & Pages → your project → Settings → Builds**, set **Build command** to `npm run build`. With `wrangler.jsonc` present, Cloudflare reads the output directory from the file but **never** runs a build unless the dashboard command is set. A log line `No build command specified. Skipping build step.` means that field is empty.
 
 Do **not** set the output directory to the repo root (`.`). A broken `.context/project` symlink used to live in git and triggers: *build output directory contains links to files that can't be accessed*.
 
